@@ -138,8 +138,7 @@ class Signer():
         )
 
         # Creating the mnemonic phrase from the entropy
-        mnemonic_phrase: List[str] = mnemonic.Mnemonic(
-            'english').to_mnemonic(entropy).split(' ')
+        mnemonic_phrase: List[str] = mnemonic.Mnemonic('english').to_mnemonic(entropy).split(' ')
 
         # Using the mnemonic phrase to create the final seed
         seed: bytes = mnemonic.Mnemonic('english').to_seed(
