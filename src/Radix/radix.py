@@ -5,6 +5,9 @@ class Radix():
     """ 
     A class which connects a provider with a wallet and allows for transactions to be
     made using this given wallet through the supplied provider.
+
+    This class is written to be a little bit more abstract and higher level as compared
+    to the raw API.
     """
 
     def __init__(
