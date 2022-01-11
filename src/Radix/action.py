@@ -2,6 +2,7 @@ from typing import Union
 from enum import Enum
 import json
 
+
 class ActionType(Enum):
     """ An enum which defines the type of actions """
     TokenTransfer = "TokenTransfer"
@@ -17,10 +18,11 @@ class ActionType(Enum):
     UpdateAllowDelegationFlag = "UpdateAllowDelegationFlag"
     CreateFixedSupplyToken = "CreateFixedSupplyToken"
     CreateMutableSupplyToken = "CreateMutableSupplyToken"
-    
+
     def __str__(self) -> str:
         """ Converts the enum to a string """
         return self.value
+
 
 class Action():
     """ 
@@ -33,7 +35,7 @@ class Action():
 
     def __init__(
         self,
-        type: Union[ActionType,str],
+        type: Union[ActionType, str],
         **kwargs: dict
     ) -> None:
         """ 
@@ -51,7 +53,8 @@ class Action():
 
         # Ensure that the type passed is an ActionType or a string
         if not isinstance(type, ActionType) and not isinstance(type, str):
-            raise ValueError("The passed `type` argument is neither an ActionType nor a string")
+            raise ValueError(
+                "The passed `type` argument is neither an ActionType nor a string")
 
         # Since 'from' is a reserved keyword in Python, we can not use 'from' in the kwargs.
         # Therefore, wherever there was a 'from' it was replaced with a 'from_address'. We now
@@ -60,7 +63,7 @@ class Action():
             key.replace('from_address', 'from').replace('to_address', 'to'): value
             for key, value in kwargs.items()
         }
-        
+
         self.__data['type'] = str(type)
 
     @property
