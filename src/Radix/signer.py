@@ -53,6 +53,12 @@ class Signer():
         self.__seed: bytes = seed
 
     @classmethod
+    def new_random(cls) -> 'Signer':
+        """ A method used to create a new Random signer object """
+        
+        return cls.from_mnemonic(mnemonic.Mnemonic('english').generate(128))
+
+    @classmethod
     def from_mnemonic(
         cls,
         mnemonic_phrase: Union[str, List[str]]
