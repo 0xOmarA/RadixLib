@@ -1,6 +1,6 @@
 from typing import Optional, List, Dict, Tuple
-from network import Network
-from action import Action
+from .network import Network
+from .action import Action
 import requests
 import re
 
