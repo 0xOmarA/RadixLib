@@ -43,3 +43,5 @@ nodeLanguageServer/**
 nodeLanguageServer.*/**
 dist/**
 env
+**prav**
+**build**

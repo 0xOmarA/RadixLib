@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: RadixLib
+Version: 0.0.1
+Summary: A Python package written to make the interaction with the Radix blockchain easier
+Home-page: https://github.com/RealOAAS/RadixLib
+Author: Omar Abdulla
+Author-email: omara.pae@live.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/RealOAAS/RadixLib/issues
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
