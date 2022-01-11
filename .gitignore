@@ -45,3 +45,4 @@ dist/**
 env
 **prav**
 **build**
+**egg-info
