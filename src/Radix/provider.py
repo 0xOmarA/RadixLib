@@ -51,10 +51,10 @@ class Provider():
 
         # Setting base url of the API object depending on the passed params
         self.base_url: str
-        if network is not None:
-            self.base_url = self.DEFAULT_MAINNET_ADDRESS if network is Network.MAINNET else self.DEFAULT_STOKENET_ADDRESS
-        else:
+        if custom_node_address is not None:
             self.base_url = custom_node_address.strip('\\').strip('//')
+        else:
+            self.base_url = self.DEFAULT_MAINNET_ADDRESS if network is Network.MAINNET else self.DEFAULT_STOKENET_ADDRESS
 
     def __dispatch(
         self,
