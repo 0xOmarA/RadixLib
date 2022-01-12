@@ -449,13 +449,6 @@ class Provider():
         if isinstance(actions, Action):
             actions: List[Action] = [actions]
 
-        print({
-                "actions": list(map(Action.to_dict, actions)),
-                "feePayer": fee_payer,
-                "message": message,
-                "disableResourceAllocationAndDestroy": disableResourceAllocationAndDestroy,
-            },)
-
         return self.__dispatch(
             endpoint="construction",
             http_method="POST",
