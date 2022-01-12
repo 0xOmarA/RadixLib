@@ -70,4 +70,4 @@ def calculate_token_rri(
         ).digest()
     ).digest()
 
-    return bech32.bech32_encode(f"{token_symbol}_{NetworkSpecificConstants[network]}", bech32.convertbits(b"\x03" + final_hash[6:32], 8 ,5))
+    return bech32.bech32_encode(f"{token_symbol}_{NetworkSpecificConstants.TOKEN_HRP[network]}", bech32.convertbits(b"\x03" + final_hash[6:32], 8 ,5))
