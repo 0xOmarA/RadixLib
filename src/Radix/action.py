@@ -74,7 +74,7 @@ class Action():
         """ Converts this object to a string """
         return json.dumps(self.__data)
 
-    def __dict__(self) -> str:
+    def to_dict(self) -> dict:
         """ Converts this object to a dictionary """
         return json.loads(str(self))
 

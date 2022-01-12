@@ -1,4 +1,4 @@
-from typing import Optional, List, Dict, Tuple
+from typing import Optional, List, Dict, Tuple, Union
 from .network import Network
 from .action import Action
 import requests
@@ -423,20 +423,20 @@ class Provider():
 
     def build_transaction(
         self,
-        actions: List[Action],
+        actions: Union[Action, List[Action]],
         fee_payer: str,
-        message: str = None,
-        disableResourceAllocationAndDestroy: bool = None,
+        message: Optional[str] = None,
+        disableResourceAllocationAndDestroy: Optional[bool] = None,
     ) -> requests.Response:
         """
         Get an unsigned transaction.
 
         # Arguments
-        * `actions: List[Action]` - A list of the `Radix.Action` objects which we want to incldue in
+        * `actions: Union[Action, List[Action]]` - A list of the `Radix.Action` objects which we want to incldue in
         the transaction
         * `fee_payer: str` - A string of the address which will be paying the fees of the transaction.
-        * `message: str` - A message to include in the transaction.
-        * `disableResourceAllocationAndDestroy: bool` - A boolean which controls the allocation and 
+        * `message: Optional[str]` - A message to include in the transaction.
+        * `disableResourceAllocationAndDestroy: Optional[bool]` - A boolean which controls the allocation and 
         destruction of resources.
 
         # Returns
@@ -445,12 +445,15 @@ class Provider():
         as the status code.
         """
 
+        if isinstance(actions, Action):
+            actions: List[Action] = [actions]
+
         return self.__dispatch(
             endpoint="construction",
             http_method="POST",
             api_method="construction.build_transaction",
             params={
-                "actions": list(map(dict, actions)),
+                "actions": list(map(Action.to_dict, actions)),
                 "feePayer": fee_payer,
                 "message": message,
                 "disableResourceAllocationAndDestroy": disableResourceAllocationAndDestroy,
@@ -571,7 +574,7 @@ class Provider():
             http_method="POST",
             api_method="account.submit_transaction_single_step",
             params={
-                "actions": list(map(dict, actions)),
+                "actions": list(map(Action.to_dict, actions)),
                 "message": message,
                 "disableResourceAllocationAndDestroy": disableResourceAllocationAndDestroy,
             },
