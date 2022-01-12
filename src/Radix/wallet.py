@@ -73,51 +73,6 @@ class Wallet():
         """ A getter method for the signer's private key """
         return self.signer.private_key(index = self.index)
 
-    def get_balances(self) -> Dict[str, int]:
-        """ 
-        This method queries the blockchain for the balances of the tokens that this person
-        holds and returns a dictionary mapping of the token RRI and the balance of this token.
-
-        # Returns
-
-        * `Dict[str, int]` - A dictionary mapping which maps the RRI to the balance of the tokens
-        """
-
-        response: dict = self.provider.get_balances(
-            address = self.signer.wallet_address(
-                index = self.index,
-                mainnet = True if self.provider.network is Network.MAINNET else False
-            )
-        ).json()
-
-        if 'error' in response.keys():
-            raise KeyError(f"Encountered an error when trying to get the balances: {response}")
-
-        return {
-            token_info['rri']: int(token_info['amount'])
-            for token_info in response['result']['tokenBalances']
-        }
-
-    def get_balance_of_token(
-        self,
-        token_rri: str
-    ) -> int:
-        """
-        Gets the balance for the specific token with the provided RRI.
-
-        # Arguments
-
-        * `token_rri: str` - A string of the token RRI to get the balance of
-
-        # Returns
-
-        * `int` - An integer of the current balance for the provided token
-        """
-
-        balance: int = self.get_balances().get(token_rri)
-        
-        return 0 if balance is None else balance
-
     def build_sign_and_send_transaction(
         self,
         actions: Union[Action, List[Action]],
@@ -202,3 +157,48 @@ class Wallet():
             return response['result']['txID']
         except:
             return response['result']['transaction']['txID']
+
+    def get_balances(self) -> Dict[str, int]:
+        """ 
+        This method queries the blockchain for the balances of the tokens that this person
+        holds and returns a dictionary mapping of the token RRI and the balance of this token.
+
+        # Returns
+
+        * `Dict[str, int]` - A dictionary mapping which maps the RRI to the balance of the tokens
+        """
+
+        response: dict = self.provider.get_balances(
+            address = self.signer.wallet_address(
+                index = self.index,
+                mainnet = True if self.provider.network is Network.MAINNET else False
+            )
+        ).json()
+
+        if 'error' in response.keys():
+            raise KeyError(f"Encountered an error when trying to get the balances: {response}")
+
+        return {
+            token_info['rri']: int(token_info['amount'])
+            for token_info in response['result']['tokenBalances']
+        }
+
+    def get_balance_of_token(
+        self,
+        token_rri: str
+    ) -> int:
+        """
+        Gets the balance for the specific token with the provided RRI.
+
+        # Arguments
+
+        * `token_rri: str` - A string of the token RRI to get the balance of
+
+        # Returns
+
+        * `int` - An integer of the current balance for the provided token
+        """
+
+        balance: int = self.get_balances().get(token_rri)
+        
+        return 0 if balance is None else balance
