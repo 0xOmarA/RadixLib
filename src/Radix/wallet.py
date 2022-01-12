@@ -1,7 +1,9 @@
 from .provider import Provider
 from .network import Network
 from .signer import Signer
-from typing import Dict
+from .action import Action
+from typing import Dict, Optional, List, Union
+import re
 
 
 class Wallet():
@@ -94,3 +96,69 @@ class Wallet():
         balance: int = self.get_balances().get(token_rri)
         
         return 0 if balance is None else balance
+
+    def build_sign_and_send_transaction(
+        self,
+        actions: Union[Action, List[Action]],
+        fee_payer: str,
+        message: Optional[str] = None,
+        encrypt_message: bool = False,
+    ) -> str:
+        """
+        A method which is used to build, sign, and then eventually send a transaction
+        off to the blockchain. This method is used as a quick and higher level way to 
+        make transactions.
+
+        # Arguments
+
+        * `actions: Union[Action, List[Action]]` - A list of the `Radix.Action` objects which we want to incldue in
+        the transaction
+        * `fee_payer: str` - A string of the address which will be paying the fees of the transaction.
+        * `message: Optional[str]` - A message to include in the transaction.
+        * `encrypt_message: bool` - A boolean which defines if the message included in the transaction should be 
+        encrypted or not. The encryption used makes it so that only the wallet of the receiver can decode.
+
+        # Returns
+
+        * `str` - A string of the transaction hash for this transaction.
+
+        # Raises
+
+        * `KeyError` - A key error if any error is faced during the building, signing, or the sending of the 
+        transaction.
+        """
+
+        # Building the transaction through the data passed to the function
+        response: dict = self.provider.build_transaction(
+            actions = actions,
+            fee_payer = fee_payer,
+            message = message,
+        )
+
+        if 'error' in response.keys():
+            raise KeyError(f"An error was encountered while building the transaction. Error: {response}")
+
+        # Signing the transaction information
+        blob: str = response['result']['transaction']['blob']
+        hash_of_blob_to_sign: str = response['result']['transaction']['hashOfBlobToSign']
+        signed_data: str = self.signer.sign(hash_of_blob_to_sign, index = self.index)
+
+        # Finalizing the transaction and sending it
+        response: dict = self.provider.finalize_transaction(
+            blob = blob,
+            signature_der = signed_data,
+            public_key_of_signer = self.signer.public_key(index = self.index),
+            immediateSubmit = True
+        ).json()
+
+        if 'error' in response.keys():
+            raise Exception(f"An error has occured when finalizing the transaction: {response['error']}")
+
+        # Some of the API calls put the tx_hash under the response.result.transaction.txID
+        # while some of the API calls put it under response.result.txID. In order to avoid
+        # confusion I will be using regex to extract the txID out of the response and returning
+        # it back to the user
+        return re.findall(
+            r'\"txID\": "([0123456789abcdef]{64})"',
+            response.text
+        )[0]
