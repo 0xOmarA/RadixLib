@@ -54,6 +54,24 @@ class Wallet():
         """ A getter method for the given index """
         return self.__index
 
+    @property
+    def wallet_address(self) -> str:
+        """ A getter method for the wallet address """
+        return self.signer.wallet_address(
+            index = self.index,
+            mainnet = True if self.provider.network is Network.MAINNET else False
+        )
+
+    @property
+    def public_key(self) -> str:
+        """ A getter method for the signer's public key """
+        return self.signer.public_key(index = self.index)
+
+    @property
+    def private_key(self) -> str:
+        """ A getter method for the signer's private key """
+        return self.signer.private_key(index = self.index)
+
     def get_balances(self) -> Dict[str, int]:
         """ 
         This method queries the blockchain for the balances of the tokens that this person
