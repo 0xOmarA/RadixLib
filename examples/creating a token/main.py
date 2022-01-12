@@ -21,7 +21,7 @@ def main() -> None:
     # Creating a new proider and signer to use to talk to the Radix API
     provider: Radix.Provider = Radix.Provider(network = network)
     signer: Radix.Signer = Radix.Signer.from_mnemonic(mnemonic_phrase)
-    wallet_address: str = signer.wallet_address( index = 0, mainnet = True if network is Radix.Network.MAINNET else False )
+    wallet_address: str = signer.wallet_address(index = 0, mainnet = True if network is Radix.Network.MAINNET else False)
 
     # Getting the balance of XRD to ensure that we have enoguh to create
     # a new token on the radix ledger.
