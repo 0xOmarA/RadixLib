@@ -9,8 +9,8 @@ class Wallet():
     A class which connects a provider with a wallet and allows for transactions to be
     made using this given wallet through the supplied provider.
 
-    This class is written to be a little bit more abstract and higher level as compared
-    to the raw API.
+    The whole concept and idea behind this wallet object is that I would like for it to
+    be more abstract and higher level than the basic provider implementation.
     """
 
     def __init__(
@@ -60,10 +60,37 @@ class Wallet():
         * `Dict[str, int]` - A dictionary mapping which maps the RRI to the balance of the tokens
         """
 
-        # response: dict = self.provider.get_balances(address = self.signer.wallet_address(index = self.index, mainnet=True if self.provider.network is Network.MAINNET else False))
-        api_response: dict = self.provider.get_balances(
+        response: dict = self.provider.get_balances(
             address = self.signer.wallet_address(
                 index = self.index,
                 mainnet = True if self.provider.network is Network.MAINNET else False
             )
         ).json()
+
+        if 'error' in response.keys():
+            raise KeyError(f"Encountered an error when trying to get the balances: {response}")
+
+        return {
+            token_info['rri']: int(token_info['amount'])
+            for token_info in response['result']['tokenBalances']
+        }
+
+    def get_balance_of_token(
+        self,
+        token_rri: str
+    ) -> int:
+        """
+        Gets the balance for the specific token with the provided RRI.
+
+        # Arguments
+
+        * `token_rri: str` - A string of the token RRI to get the balance of
+
+        # Returns
+
+        * `int` - An integer of the current balance for the provided token
+        """
+
+        balance: int = self.get_balances().get(token_rri)
+        
+        return 0 if balance is None else balance

@@ -32,7 +32,7 @@ def main() -> None:
             rri = token_rri
         ),
         fee_payer = wallet_address,
-        message = "I have entrust you with 100 of my test tokens. Use them wisely..."
+        message = "0000" + "I have entrust you with 100 of my test tokens. Use them wisely...".encode('utf-8').hex()
     ).json()
 
     if 'error' in response.keys():
