@@ -3,6 +3,7 @@ from .provider import Provider
 from .network import Network
 from .signer import Signer
 from .action import Action
+from . import utils
 import requests
 import json
 import re
@@ -146,13 +147,30 @@ class Wallet():
 
         * `KeyError` - A key error if any error is faced during the building, signing, or the sending of the 
         transaction.
+
+        # Note
+
+        When asking this function to encrypt the message, it will use the `to_address` in the first action where
+        a `to_address is provided`.
         """
 
-        # Encrypting the message if we need to encrypt it 
-        if encrypt_message is True:
-            pass
-        else:
-            encoded_message: str = "0000" + message.encode().hex()
+        encoded_message: str = None
+        if message:
+            # Encrypting the message if we need to encrypt it 
+            if encrypt_message is True:
+                # Converting the actions to a list if it's not already that
+                actions: List[Action] = actions if isinstance(actions, list) else [actions]
+                
+                # Getting the address to use for the encypted message.
+                addresses: List[str] = [action.to_dict()['to'] for action in actions if action.to_dict().get('to') is not None]
+
+                encoded_message: str = utils.encrypt_message(
+                    sender_private_key = self.private_key,
+                    receiver_public_key = utils.wallet_address_to_public_key(addresses[0]),
+                    message = message
+                )
+            else:
+                encoded_message: str = "0000" + message.encode().hex()
 
         # Building the transaction through the data passed to the function
         response: dict = self.provider.build_transaction(
