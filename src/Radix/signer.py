@@ -241,8 +241,7 @@ class Signer():
 
         return bech32.bech32_encode(
             hrp = NetworkSpecificConstants.WALLET_ADDRESS_HRP[Network.MAINNET if mainnet else Network.STOKENET],
-            data=bech32.convertbits(
-                b"\x04" + bytearray.fromhex(self.hdwallet_object(index=index).public_key()), 8, 5)
+            data=bech32.convertbits(b"\x04" + bytearray.fromhex(self.hdwallet_object(index=index).public_key()), 8, 5)
         )
 
     def sign(
