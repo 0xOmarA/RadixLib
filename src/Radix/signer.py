@@ -1,3 +1,5 @@
+from . import network_specific_constants as NetworkSpecificConstants
+from .network import Network
 from Crypto.Cipher._mode_gcm import GcmMode
 from Crypto.Protocol.KDF import scrypt
 from typing import List, Tuple, Dict, Union
@@ -238,7 +240,7 @@ class Signer():
         """
 
         return bech32.bech32_encode(
-            hrp='rdx' if mainnet else 'tdx',
+            hrp = NetworkSpecificConstants.WALLET_ADDRESS_HRP[Network.MAINNET if mainnet else Network.STOKENET],
             data=bech32.convertbits(
                 b"\x04" + bytearray.fromhex(self.hdwallet_object(index=index).public_key()), 8, 5)
         )
