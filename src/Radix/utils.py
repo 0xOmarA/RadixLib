@@ -1,4 +1,6 @@
 from . import network_specific_constants as NetworkSpecificConstants
+from ecdsa.keys import SigningKey, VerifyingKey
+from ecdsa.curves import SECP256k1
 from .network import Network
 from typing import Union
 import hashlib
@@ -71,3 +73,26 @@ def calculate_token_rri(
     ).digest()
 
     return bech32.bech32_encode(f"{token_symbol}_{NetworkSpecificConstants.TOKEN_HRP[network]}", bech32.convertbits(b"\x03" + final_hash[6:32], 8 ,5))
+
+
+def wallet_address_to_public_key(wallet_address: str) -> str:
+    """
+    This method is used to get the public key of any wallet by translating the wallet
+    address to the corresponding public key of the wallet.
+
+    # Arguments
+
+    * `wallet_address: str` - A string of the wallet address that we want the public 
+    key for.
+
+    # Returns
+
+    * `str` - A string of the public key
+    """
+
+    return bytes(bech32.convertbits(
+        data = bech32.bech32_decode(wallet_address)[1],
+        frombits = 5,
+        tobits = 8,
+        pad = False
+    )[1:34]).hex()

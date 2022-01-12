@@ -148,11 +148,17 @@ class Wallet():
         transaction.
         """
 
+        # Encrypting the message if we need to encrypt it 
+        if encrypt_message is True:
+            pass
+        else:
+            encoded_message: str = "0000" + message.encode().hex()
+
         # Building the transaction through the data passed to the function
         response: dict = self.provider.build_transaction(
             actions = actions,
             fee_payer = fee_payer,
-            message = message,
+            message = encoded_message,
         ).json()
 
         if 'error' in response.keys():
