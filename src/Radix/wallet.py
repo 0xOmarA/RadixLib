@@ -1,7 +1,7 @@
 from .provider import Provider
 from .signer import Signer
 
-class Radix():
+class Wallet():
     """ 
     A class which connects a provider with a wallet and allows for transactions to be
     made using this given wallet through the supplied provider.
