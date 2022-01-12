@@ -1,5 +1,8 @@
 from .provider import Provider
+from .network import Network
 from .signer import Signer
+from typing import Dict
+
 
 class Wallet():
     """ 
@@ -46,3 +49,21 @@ class Wallet():
     def index(self) -> int:
         """ A getter method for the given index """
         return self.__index
+
+    def get_balances(self) -> Dict[str, int]:
+        """ 
+        This method queries the blockchain for the balances of the tokens that this person
+        holds and returns a dictionary mapping of the token RRI and the balance of this token.
+
+        # Returns
+
+        * `Dict[str, int]` - A dictionary mapping which maps the RRI to the balance of the tokens
+        """
+
+        # response: dict = self.provider.get_balances(address = self.signer.wallet_address(index = self.index, mainnet=True if self.provider.network is Network.MAINNET else False))
+        api_response: dict = self.provider.get_balances(
+            address = self.signer.wallet_address(
+                index = self.index,
+                mainnet = True if self.provider.network is Network.MAINNET else False
+            )
+        ).json()
