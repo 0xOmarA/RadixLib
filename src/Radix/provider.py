@@ -432,6 +432,7 @@ class Provider():
         Get an unsigned transaction.
 
         # Arguments
+        
         * `actions: Union[Action, List[Action]]` - A list of the `Radix.Action` objects which we want to incldue in
         the transaction
         * `fee_payer: str` - A string of the address which will be paying the fees of the transaction.
