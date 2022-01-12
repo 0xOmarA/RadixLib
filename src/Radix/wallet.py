@@ -1,8 +1,10 @@
+from typing import Dict, Optional, List, Union
 from .provider import Provider
 from .network import Network
 from .signer import Signer
 from .action import Action
-from typing import Dict, Optional, List, Union
+import requests
+import json
 import re
 
 
@@ -133,7 +135,7 @@ class Wallet():
             actions = actions,
             fee_payer = fee_payer,
             message = message,
-        )
+        ).json()
 
         if 'error' in response.keys():
             raise KeyError(f"An error was encountered while building the transaction. Error: {response}")
@@ -144,7 +146,7 @@ class Wallet():
         signed_data: str = self.signer.sign(hash_of_blob_to_sign, index = self.index)
 
         # Finalizing the transaction and sending it
-        response: dict = self.provider.finalize_transaction(
+        response: requests.Response = self.provider.finalize_transaction(
             blob = blob,
             signature_der = signed_data,
             public_key_of_signer = self.signer.public_key(index = self.index),
@@ -154,11 +156,7 @@ class Wallet():
         if 'error' in response.keys():
             raise Exception(f"An error has occured when finalizing the transaction: {response['error']}")
 
-        # Some of the API calls put the tx_hash under the response.result.transaction.txID
-        # while some of the API calls put it under response.result.txID. In order to avoid
-        # confusion I will be using regex to extract the txID out of the response and returning
-        # it back to the user
-        return re.findall(
-            r'\"txID\": "([0123456789abcdef]{64})"',
-            response.text
-        )[0]
+        try:
+            return response['result']['txID']
+        except:
+            return response['result']['transaction']['txID']
