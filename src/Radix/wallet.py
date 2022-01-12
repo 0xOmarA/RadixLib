@@ -79,6 +79,7 @@ class Wallet():
         fee_payer: str,
         message: Optional[str] = None,
         encrypt_message: bool = False,
+        encrypt_for_address: Optional[str] = None
     ) -> str:
         """
         A method which is used to build, sign, and then eventually send a transaction
@@ -93,6 +94,8 @@ class Wallet():
         * `message: Optional[str]` - A message to include in the transaction.
         * `encrypt_message: bool` - A boolean which defines if the message included in the transaction should be 
         encrypted or not. The encryption used makes it so that only the wallet of the receiver can decode.
+        * `encrypt_for_address: Optional[str]` - The address to encrypt the messages for. If this address is not provided,
+        then it is assumed that you wish to encrypt the message for the first `to_address` in the actions
 
         # Returns
 
@@ -121,7 +124,7 @@ class Wallet():
 
                 encoded_message: str = utils.encrypt_message(
                     sender_private_key = self.private_key,
-                    receiver_public_key = utils.wallet_address_to_public_key(addresses[0]),
+                    receiver_public_key = utils.wallet_address_to_public_key(addresses[0] if encrypt_for_address is None else encrypt_for_address),
                     message = message
                 )
             else:
