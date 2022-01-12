@@ -1,4 +1,8 @@
+from . import network_specific_constants as NetworkSpecificConstants
+from .network import Network
 from typing import Union
+import hashlib
+import bech32
 
 
 def xrd_to_atto(xrd_amount: Union[int, float, str]) -> int:
@@ -34,3 +38,36 @@ def atto_to_xrd(atto_amount: Union[str, int]) -> float:
     """
 
     return int(atto_amount) / (10 ** 18)
+
+
+def calculate_token_rri(
+    creator_public_key: str,
+    token_symbol: str,
+    network: Network
+) -> str:
+    """
+    A method which is used to calculate the RRI for a new token based on the public
+    key of the creator, token symbol, and the network which the token was created on.
+
+    # Arguments
+
+    * `creator_public_key: str` - A string of the public key of the creator of the token.
+    * `token_symbol: str` - The symbol of the new token.
+    * `network: Network` - The network that the token was created on. 
+
+    # Returns
+
+    * `str` - A string of the RRI for the token.
+    """
+
+    # All of the calculated RRIs require that the token symbol given is given
+    # in small letters
+    token_symbol: str = token_symbol.lower()
+
+    final_hash: bytes = hashlib.sha256(
+        string = hashlib.sha256(
+            string = bytearray.fromhex(creator_public_key) + token_symbol.encode()
+        ).digest()
+    ).digest()
+
+    return bech32.bech32_encode(f"{token_symbol}_{NetworkSpecificConstants[network]}", bech32.convertbits(b"\x03" + final_hash[6:32], 8 ,5))
