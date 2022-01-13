@@ -39,7 +39,7 @@ setuptools.setup(
         "hdwallet",
         "bech32",
     ],
-    extras_require = {
+    extras_require={
         "dev": [
             "pytest"
         ]
