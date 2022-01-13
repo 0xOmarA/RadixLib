@@ -5,6 +5,7 @@ import json
 
 class ActionType(Enum):
     """ An enum which defines the type of actions """
+    Other = "Other"
     TokenTransfer = "TokenTransfer"
     StakeTokens = "StakeTokens"
     UnstakeTokens = "UnstakeTokens"
@@ -76,6 +77,20 @@ class Action():
     def to_dict(self) -> dict:
         """ Converts this object to a dictionary """
         return json.loads(str(self))
+
+    @classmethod
+    def new_other_action(cls) -> 'Action':
+        """
+        Creates a new action of the type 'Other'
+
+        # Returns
+
+        * `Action` - An action object of this other action.
+        """
+
+        return cls(
+            type = 'other'
+        )
 
     @classmethod
     def new_token_transfer_action(
