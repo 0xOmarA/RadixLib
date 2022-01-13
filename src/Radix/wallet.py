@@ -1,4 +1,5 @@
 from typing import Dict, Optional, List, Union
+from .transaction import Transaction
 from .provider import Provider
 from .network import Network
 from .signer import Signer
@@ -154,7 +155,7 @@ class Wallet():
         ).json()
 
         if 'error' in response.keys():
-            raise Exception(f"An error has occured when finalizing the transaction: {response['error']}")
+            raise KeyError(f"An error has occured when finalizing the transaction: {response['error']}")
 
         try:
             return response['result']['txID']
@@ -205,3 +206,31 @@ class Wallet():
         balance: int = self.get_balances().get(token_rri)
         
         return 0 if balance is None else balance
+
+    def get_transaction_history(
+        self,
+        size: int,
+    ) -> List[Transaction]:
+        """
+        A method used to get the transaction history for the loaded wallet.
+
+        # Arguments
+
+        * `size: int` - An optional integer value used to define the size or the maximum 
+        number of transactions to retrieve from the API.
+
+        # Returns
+
+        * `List[Transaction]` - A sorted list of `Transaction` objects where item 0 is the 
+        oldest transaction while item -1 is the newest transaction
+        """
+        # Getting the transactions for the wallet address
+        response: dict = self.provider.get_transaction_history(
+            address = self.wallet_address,
+            size = size
+        ).json()
+
+        if 'error' in response.keys():
+            raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
+
+        return sorted(list(map(lambda x: Transaction(**x), [{key.replace('txID', 'tx_id').replace('sentAt', 'sent_at'): value for key,value in transaction_info.items()} for transaction_info in response['result']['transactions']])), key = lambda x: x.sent_at)
