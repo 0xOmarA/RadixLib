@@ -35,7 +35,6 @@ def main() -> None:
             amount = amount,
             rri = token_rri
         ),
-        # message = "Speak to you soon!",
         message = "Speak to you soon my friend.",
         encrypt_message = True,
         encrypt_for_address = to_address
