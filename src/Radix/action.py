@@ -53,8 +53,7 @@ class Action():
 
         # Ensure that the type passed is an ActionType or a string
         if not isinstance(type, ActionType) and not isinstance(type, str):
-            raise ValueError(
-                "The passed `type` argument is neither an ActionType nor a string")
+            raise ValueError(f"The passed `type` argument is neither an ActionType nor a string.")
 
         # Since 'from' is a reserved keyword in Python, we can not use 'from' in the kwargs.
         # Therefore, wherever there was a 'from' it was replaced with a 'from_address'. We now
