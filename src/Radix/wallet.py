@@ -4,6 +4,7 @@ from .provider import Provider
 from .network import Network
 from .signer import Signer
 from .action import Action
+from .token import Token
 from . import utils
 import requests
 import json
@@ -189,21 +190,24 @@ class Wallet():
 
     def get_balance_of_token(
         self,
-        token_rri: str
+        token: Union[str, Token]
     ) -> int:
         """
         Gets the balance for the specific token with the provided RRI.
 
         # Arguments
 
-        * `token_rri: str` - A string of the token RRI to get the balance of
+        * `token: Union[str, Token]` - Either a string of the token's RRI or a token object from
+        which the RRI is obtained
 
         # Returns
 
         * `int` - An integer of the current balance for the provided token
         """
 
-        balance: int = self.get_balances().get(token_rri)
+        # Getting the RRI from the token object if the `token` arg is a `Token`
+        rri: str = token.rri if isinstance(token, Token) else token
+        balance: int = self.get_balances().get(rri)
         
         return 0 if balance is None else balance
 
@@ -259,3 +263,29 @@ class Wallet():
             raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
 
         return Transaction(**{key.replace('txID', 'tx_id').replace('sentAt', 'sent_at'): value for key,value in response['result'].items()})
+
+    def get_token(
+        self,
+        rri: str
+    ) -> Token:
+        """
+        A method used to get all of the token information from the Token's RRI.
+
+        # Arguments
+
+        * `rri: str` - A string of the Radix Resource Identifier (RRI) underwhich the
+        token was created
+
+        # Returns
+
+        `Token` - A token object loaded with the token's information
+        """
+
+        response: dict = self.provider.get_token_info(
+            rri = rri
+        ).json()
+
+        if 'error' in response.keys():
+            raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
+
+        return Token(**{key.replace('tokenInfoURL', 'token_info_url').replace('currentSupply', 'current_supply').replace('iconURL', 'icon_url'): value for key, value in response['result'].items()})
