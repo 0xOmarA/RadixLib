@@ -234,3 +234,28 @@ class Wallet():
             raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
 
         return sorted(list(map(lambda x: Transaction(**x), [{key.replace('txID', 'tx_id').replace('sentAt', 'sent_at'): value for key,value in transaction_info.items()} for transaction_info in response['result']['transactions']])), key = lambda x: x.sent_at)
+
+    def get_transaction(
+        self,
+        tx_id: str
+    ) -> Transaction:
+        """
+        Loads in a transaction object from the transaction id passed as an argument
+
+        # Argument
+
+        * `tx_id: str` - A string of the transaction id.
+
+        # Returns
+
+        * `Transaction` - A transaction object loaded from the transaction id
+        """
+
+        response: dict = self.provider.lookup_transaction(
+            txID = tx_id
+        ).json()
+
+        if 'error' in response.keys():
+            raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
+
+        return Transaction(**{key.replace('txID', 'tx_id').replace('sentAt', 'sent_at'): value for key,value in response['result'].items()})
