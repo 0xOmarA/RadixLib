@@ -38,5 +38,10 @@ setuptools.setup(
         "mnemonic",
         "hdwallet",
         "bech32",
-    ] 
+    ],
+    extras_require = {
+        "dev": [
+            "pytest"
+        ]
+    }
 )
