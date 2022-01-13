@@ -28,7 +28,7 @@ def main() -> None:
 
     # Getting the balance of XRD to ensure that we have enoguh to create
     # a new token on the radix ledger.
-    xrd_balance: float = wallet.get_balance_of_token(Radix.NetworkSpecificConstants.XRD[network])
+    xrd_balance: float = Radix.utils.atto_to_xrd(wallet.get_balance_of_token(Radix.NetworkSpecificConstants.XRD[network]))
     if xrd_balance < 100:
         raise ValueError(f"Radix requires that the creator of a token put forth 100 XRD when creating a new token on the Raidx ledger. However, you only have an XRD balance of {xrd_balance}. Please read the following article for more information on the pricing on Radix: https://learn.radixdlt.com/article/how-do-transaction-fees-work-on-radix-are-they-burned")
 
