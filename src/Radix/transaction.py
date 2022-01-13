@@ -34,6 +34,14 @@ class Transaction():
         self.__actions: List[Action] = list(map(lambda x: Action(**x), actions))
         self.__message: str = message
 
+    def __str__(self) -> str:
+        """ Represents this object as a string """
+        return f"<Transaction tx_id=\"{self.tx_id}\">"
+
+    def __repr__(self) -> str:
+        """ Represents this object """
+        return str(self)
+
     @property
     def fee(self) -> int:
         """ A getter method for the fee variable """ 
@@ -58,14 +66,6 @@ class Transaction():
     def message(self) -> Optional[str]:
         """ A getter method for the message variable """ 
         return self.__message
-
-    def __str__(self) -> str:
-        """ Represents this object as a string """
-        return f'<Transaction tx_id={self.tx_id}>'
-
-    def __repr__(self) -> str:
-        """ Represents this object """
-        return str(self)
 
     def to_dict(self) -> dict:
         """ Represents this transaction object as a dictionary """
