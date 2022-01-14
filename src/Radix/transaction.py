@@ -42,6 +42,14 @@ class Transaction():
         """ Represents this object """
         return str(self)
 
+    def __hash__(self) -> int:
+        """ Returns an integer hash for the given transaction """
+        return hash(self.tx_id)
+
+    def __eq__(self, other: 'Transaction') -> bool:
+        """ Compares self with other for equality """
+        return False if not isinstance(other, Transaction) else self.tx_id == other.tx_id
+
     @property
     def fee(self) -> int:
         """ A getter method for the fee variable """ 
