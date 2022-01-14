@@ -53,7 +53,7 @@ class Transaction():
         return self.__tx_id
 
     @property
-    def sent_at(self) -> str:
+    def sent_at(self) -> datetime:
         """ A getter method for the sent_at variable """ 
         return self.__sent_at_parsed
 
