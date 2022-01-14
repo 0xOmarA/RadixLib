@@ -1,4 +1,5 @@
 from .action import Action, ActionType
+from .transaction import Transaction
 from .provider import Provider
 from .network import Network
 from .signer import Signer
