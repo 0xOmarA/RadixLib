@@ -78,7 +78,6 @@ class Wallet():
     def build_sign_and_send_transaction(
         self,
         actions: Union[Action, List[Action]],
-        fee_payer: str,
         message: Optional[str] = None,
         encrypt_message: bool = False,
         encrypt_for_address: Optional[str] = None
@@ -92,7 +91,6 @@ class Wallet():
 
         * `actions: Union[Action, List[Action]]` - A list of the `Radix.Action` objects which we want to incldue in
         the transaction
-        * `fee_payer: str` - A string of the address which will be paying the fees of the transaction.
         * `message: Optional[str]` - A message to include in the transaction.
         * `encrypt_message: bool` - A boolean which defines if the message included in the transaction should be 
         encrypted or not. The encryption used makes it so that only the wallet of the receiver can decode.
@@ -135,7 +133,7 @@ class Wallet():
         # Building the transaction through the data passed to the function
         response: dict = self.provider.build_transaction(
             actions = actions,
-            fee_payer = fee_payer,
+            fee_payer = self.wallet_address,
             message = encoded_message,
         ).json()
 
