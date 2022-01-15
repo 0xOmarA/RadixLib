@@ -44,5 +44,6 @@ nodeLanguageServer.*/**
 dist/**
 env
 **prav**
-**build**
+build
+build.sh
 **.egg-info
