@@ -6,6 +6,7 @@ from .signer import Signer
 from .action import Action
 from .token import Token
 from . import utils
+import dateparser
 import requests
 import json
 import re
@@ -209,33 +210,92 @@ class Wallet():
         
         return 0 if balance is None else balance
 
-    def get_transaction_history(
+    def get_transaction_history_of(
         self,
-        size: int,
+        address: str,
+        size: Optional[int] = None,
     ) -> List[Transaction]:
         """
-        A method used to get the transaction history for the loaded wallet.
+        A method used to get the transaction history for a given address
 
         # Arguments
 
+        * `address: str` - A string of the address which we would like to get the transaction
+        history for
         * `size: int` - An optional integer value used to define the size or the maximum 
-        number of transactions to retrieve from the API.
+        number of transactions to retrieve from the API. This is an optional argument. If the
+        size argument is not specified, then the entire transaction history for this address
+        is pulled.
 
         # Returns
 
         * `List[Transaction]` - A sorted list of `Transaction` objects where item 0 is the 
         oldest transaction while item -1 is the newest transaction
         """
-        # Getting the transactions for the wallet address
-        response: dict = self.provider.get_transaction_history(
+        # An empty list of transaction dictionaries
+        transaction_dicts: List[dict] = []
+
+        # If the size is None, it means that we want to pull the entire transaction history
+        # for this address.
+        if size is None:
+            # Defining the init value for the cursor
+            cursor: str = None
+            while 1:
+                response: dict = self.provider.get_transaction_history(
+                    address = address,
+                    size = 100,
+                    cursor = cursor
+                ).json()
+
+                if 'error' in response.keys():
+                    raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
+
+                new_transactions:List[dict] = response['result']['transactions']
+                transaction_dicts.extend(new_transactions)
+
+                if len(new_transactions) != 100:
+                    break
+                else:
+                    cursor: str = str(dateparser.parse(new_transactions[-1]['sentAt']).timestamp()).replace('.', ':')
+
+        else:
+            response: dict = self.provider.get_transaction_history(
+                address = address,
+                size = size,
+            ).json()
+
+            if 'error' in response.keys():
+                raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
+
+            new_transactions:List[dict] = response['result']['transactions']
+            transaction_dicts.extend(new_transactions)
+
+        transactions_list: List[Transaction] = list(set(map(lambda x: Transaction(**x), [{key.replace('txID', 'tx_id').replace('sentAt', 'sent_at'): value for key,value in transaction_info.items()} for transaction_info in transaction_dicts])))
+        return sorted(transactions_list, key = lambda x: x.sent_at)
+        
+    def get_transaction_history(
+        self,
+        size: Optional[int] = None
+    ) -> List[Transaction]:
+        """
+        A method used to get the transaction history for this address
+
+        # Arguments
+        
+        * `size: int` - An optional integer value used to define the size or the maximum 
+        number of transactions to retrieve from the API. This is an optional argument. If the
+        size argument is not specified, then the entire transaction history for this address
+        is pulled.
+
+        # Returns
+
+        * `List[Transaction]` - A sorted list of `Transaction` objects where item 0 is the 
+        oldest transaction while item -1 is the newest transaction
+        """
+        return self.get_transaction_history_of(
             address = self.wallet_address,
             size = size
-        ).json()
-
-        if 'error' in response.keys():
-            raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
-
-        return sorted(list(map(lambda x: Transaction(**x), [{key.replace('txID', 'tx_id').replace('sentAt', 'sent_at'): value for key,value in transaction_info.items()} for transaction_info in response['result']['transactions']])), key = lambda x: x.sent_at)
+        )
 
     def get_transaction(
         self,

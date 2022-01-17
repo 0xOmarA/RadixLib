@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="RadixLib",
-    version="0.0.1",
+    version="0.0.2",
     author="Omar Abdulla",
     author_email="OmarAbdulla7@hotmail.com",
     description="A Python package written to make the interaction with the Radix blockchain easier",
