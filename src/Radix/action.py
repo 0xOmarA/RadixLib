@@ -89,7 +89,7 @@ class Action():
         """
 
         return cls(
-            type = 'other'
+            type = ActionType.Other
         )
 
     @classmethod
