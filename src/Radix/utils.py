@@ -159,3 +159,45 @@ def encrypt_message(
     # Getting the final representation of the message after the message
     # encryption
     return (bytearray(b'\x01') + bytearray(b'\xff') + bytearray(ephemeral_public_key.to_string("compressed")) + bytearray(nonce) + bytearray(auth_tag) + bytearray(ciphertext)).hex()
+
+
+def mainnet_to_stokenet_wallet_address(address: str) -> str:
+    """
+    This method is used to get the stokenet address for a given mainnet wallet address
+
+    # Arguments
+
+    * `address: str` - A string of the mainnet wallet address that we want to convert to
+    its equivalent stokenet address.
+
+    # Returns
+
+    * `str` - A string of the stokenet address
+    """
+
+    public_key: str = wallet_address_to_public_key(address)
+    return bech32.bech32_encode(
+        hrp = NetworkSpecificConstants.WALLET_ADDRESS_HRP[Network.STOKENET],
+        data = bech32.convertbits(b"\x04" + bytearray.fromhex(public_key), 8, 5)
+    )
+
+
+def stokenet_to_mainnet_wallet_address(address: str) -> str:
+    """
+    This method is used to get the mainnet address for a given stokenet wallet address
+
+    # Arguments
+
+    * `address: str` - A string of the stokenet wallet address that we want to convert to
+    its equivalent mainnet address.
+
+    # Returns
+
+    * `str` - A string of the mainnet address
+    """
+
+    public_key: str = wallet_address_to_public_key(address)
+    return bech32.bech32_encode(
+        hrp = NetworkSpecificConstants.WALLET_ADDRESS_HRP[Network.MAINNET],
+        data = bech32.convertbits(b"\x04" + bytearray.fromhex(public_key), 8, 5)
+    )
