@@ -1,5 +1,6 @@
 from typing import Dict, Optional, List, Union
 from .transaction import Transaction
+from .validator import Validator
 from .provider import Provider
 from .network import Network
 from .signer import Signer
@@ -347,3 +348,29 @@ class Wallet():
             raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
 
         return Token(**{key.replace('tokenInfoURL', 'token_info_url').replace('currentSupply', 'current_supply').replace('iconURL', 'icon_url'): value for key, value in response['result'].items()})
+
+    def lookup_validator(
+        self,
+        validator_address: str,
+    ) -> Validator:
+        """
+        A method used to get the information for a given validator given the address of 
+        the validator.
+
+        # Arguments
+
+        * `validator_address: str` - A string of the address of the validator.
+
+        # Returns
+
+        * `Validator` - A validator object of the validator at the given address
+        """
+
+        response: dict = self.provider.lookup_validator(
+            validator_address = validator_address
+        ).json()
+
+        if 'error' in response.keys():
+            raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
+
+        return Validator(**{utils.camel_case_to_snake_case(key): value for key, value in response['result'].items()})
