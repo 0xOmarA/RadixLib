@@ -106,6 +106,6 @@ class Token():
             "name": self.name,
             "rri": self.rri,
             "description": self.description,
-            "currentSupply": str(self.currentSupply),
+            "currentSupply": str(self.current_supply),
             "iconURL": self.icon_url,
         }
