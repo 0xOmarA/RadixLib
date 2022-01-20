@@ -349,6 +349,22 @@ class Wallet():
 
         return Token(**{key.replace('tokenInfoURL', 'token_info_url').replace('currentSupply', 'current_supply').replace('iconURL', 'icon_url'): value for key, value in response['result'].items()})
 
+    def get_native_token(self) -> Token:
+        """
+        A method used to get the information of the native token for the chain
+
+        # Returns
+
+        `Token` - A token object loaded with the information of the native token
+        """
+
+        response: dict = self.provider.get_native_token().json()
+
+        if 'error' in response.keys():
+            raise KeyError(f"An error was encountered while getting the transaction history. Error: {response}")
+
+        return Token(**{key.replace('tokenInfoURL', 'token_info_url').replace('currentSupply', 'current_supply').replace('iconURL', 'icon_url'): value for key, value in response['result'].items()})
+
     def lookup_validator(
         self,
         validator_address: str,
