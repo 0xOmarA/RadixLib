@@ -11,6 +11,7 @@ import hashlib
 import bech32
 import ecdsa
 import os
+import re
 
 
 def xrd_to_atto(xrd_amount: Union[int, float, str]) -> int:
@@ -201,3 +202,20 @@ def stokenet_to_mainnet_wallet_address(address: str) -> str:
         hrp = NetworkSpecificConstants.WALLET_ADDRESS_HRP[Network.MAINNET],
         data = bech32.convertbits(b"\x04" + bytearray.fromhex(public_key), 8, 5)
     )
+
+
+def camel_case_to_snake_case(string: str) -> str:
+    """
+    This method is used to transform a camel_case_string into snake case.
+    
+    # Arguments
+
+    * `string: str` - A string in camelCase which we want to convert to snake_case.
+
+    # Returns
+
+    * `str` - The string in snake_case.
+    """
+
+    string: str = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', string)
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', string).lower()
