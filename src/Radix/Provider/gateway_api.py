@@ -1,11 +1,12 @@
-from ..Types import NetworkType
+from ..Types import NetworkType, StateIdentifier
+from .. import utils
 from typing import Optional, Union
 import requests
 
 class GatewayProvider():
     """ 
-    A wrapper for the Gateway API which exposes the functions and endpoints in the 
-    gateway API in a simple manner. 
+    A wrapper for the Gateway API which exposes the functions and endpoints in the gateway API in a 
+    simple manner. 
     
     Link to offical Radix docs: https://docs.radixdlt.com/main/apis/gateway-api.html
     """
@@ -104,7 +105,7 @@ class GatewayProvider():
         response: requests.Response = requests.request(
             method = str(http_method),
             url = f'{self.base_url}/{endpoint}',
-            json = params,
+            json = utils.remove_none_values_recursively(params),
             headers = {
                 "X-Radixdlt-Target-Gw-Api": self.open_api_version
             }
@@ -162,3 +163,11 @@ class GatewayProvider():
                 }
             }
         )['account_identifier']['address']
+
+    def get_account_balances(
+        self,
+        wallet_address: str,
+        at_state_identifier: Optional[StateIdentifier]
+    ) -> dict:
+        pass
+        
