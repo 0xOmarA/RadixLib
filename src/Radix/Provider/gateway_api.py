@@ -1,5 +1,5 @@
 from ..Types import NetworkType
-from typing import Optional
+from typing import Optional, Union
 import requests
 
 class GatewayProvider():
@@ -130,3 +130,35 @@ class GatewayProvider():
             params = {},
             http_method = "POST"
         )
+
+    def derive_account_identifier(
+        self,
+        public_key: Union[str, bytes, bytearray]
+    ) -> str:
+        """
+        Derives the account address from the public key. 
+
+        # Arguments
+
+        * `public_key: Union[str, bytes, bytearray]` - The public key used to derive the wallet 
+        address from. Can be passed as a string, bytes, or a bytearray.
+
+        # Returns
+
+        `str` - A string of the derived wallet address
+        """
+
+        pub_key: str
+        if isinstance(public_key, (bytes, bytearray)):
+            pub_key = public_key.hex()
+        else:
+            pub_key = public_key
+
+        return self.__dispatch(
+            endpoint = "account/derive",
+            params = {
+                "public_key": {
+                    "hex": pub_key
+                }
+            }
+        )['account_identifier']['address']
