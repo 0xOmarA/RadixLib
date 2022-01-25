@@ -18,7 +18,7 @@ class GatewayProvider():
         self,
         network: NetworkType,
         custom_node_address: Optional[str] = None,
-        open_api_version: Optional[str] = "1.0.2"
+        open_api_version: str = "1.0.2"
     ) -> None:
         """
         Initializes a new gateway API using the network type provided and the optional custom node 
@@ -29,8 +29,8 @@ class GatewayProvider():
         * `network: NetworkType` - The type of network to connect to.
         * `custom_node_address: Optional[str]` - An optional argument which defaults to None. You 
         may use this argument if you wish to connect to a custom node.
-        * `open_api_version: Optional[str]` - An optional string which describes the version of the
-        open api used for the gateway API.
+        * `open_api_version: str` - An string which describes the version of the open api used for 
+        the gateway API. Defaults to `1.0.2`.
         """
 
         self.__open_api_version: str = open_api_version
@@ -45,7 +45,7 @@ class GatewayProvider():
 
         # Stripping additional characters that might be at the end of the base url.
         self.__base_url = self.__base_url.strip('/\\') 
-
+        
     @property
     def base_url(self) -> str:
         """ A getter method for the base url """
@@ -102,7 +102,7 @@ class GatewayProvider():
 
         # Making the request using the passed arguments
         response: requests.Response = requests.request(
-            method = http_method,
+            method = str(http_method),
             url = f'{self.base_url}/{endpoint}',
             json = params,
             headers = {

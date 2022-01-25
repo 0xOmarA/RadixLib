@@ -38,12 +38,14 @@ setuptools.setup(
         "mnemonic",
         "hdwallet",
         "bech32",
+        "types-requests"
     ],
     extras_require={
         "dev": [
             "pytest",
             "check-manifest",
-            "twine"
+            "twine",
+            "mypy"
         ]
     }
 )
