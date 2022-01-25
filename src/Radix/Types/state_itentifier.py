@@ -71,11 +71,19 @@ class StateIdentifier():
         """ A getter method for the round """
         return self.__round
 
+    def __str__(self) -> str:
+        """ Represents the StateIdentifier as a string """
+        return f'<StateIdentifier { " ".join(map(lambda x: "%s=%s" % x, utils.remove_none_values_recursively(self.to_dict()).items())) }>'
+
+    def __repr__(self) -> str:
+        """ Represents the StateIdentifier """
+        return str(self)
+
     def to_dict(self) -> dict:
         """ Converts the StateIdentifier to a dictionary and removed the None pairs """
         return utils.remove_none_values_recursively({
             "version": self.version,
-            "timestamp": self.timestamp.astimezone(pytz.UTC).isoformat().replace('+00:00', 'Z'),
+            "timestamp": self.timestamp.astimezone(pytz.UTC).isoformat().replace('+00:00', 'Z') if self.timestamp is not None else None,
             "epoch": self.epoch,
             "round": self.round,
         })
