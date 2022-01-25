@@ -52,22 +52,22 @@ class StateIdentifier():
             raise ValueError("The at_state_identifier was not either (A) missing (B) with only a state_version; (C) with only a Timestamp; (D) with only an Epoch; or (E) with only an Epoch and Round")
 
     @property
-    def version(self) -> int:
+    def version(self) -> Optional[int]:
         """ A getter method for the version """
         return self.__version
 
     @property
-    def timestamp(self) -> datetime:
+    def timestamp(self) -> Optional[datetime]:
         """ A getter method for the timestamp """
         return self.__timestamp
 
     @property
-    def epoch(self) -> int:
+    def epoch(self) -> Optional[int]:
         """ A getter method for the epoch """
         return self.__epoch
 
     @property
-    def round(self) -> int:
+    def round(self) -> Optional[int]:
         """ A getter method for the round """
         return self.__round
 

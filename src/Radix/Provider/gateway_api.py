@@ -225,8 +225,8 @@ class GatewayProvider():
         unique_rris: List[str] = list(set(list(final_balances['staking_balance'].keys()) + list(final_balances['liquid_balance'].keys())))
         
         for rri in unique_rris:
-            balance1: int = final_balances['staking_balance'].get(rri)           
-            balance2: int = final_balances['liquid_balance'].get(rri)     
+            balance1: Optional[int] = final_balances['staking_balance'].get(rri)           
+            balance2: Optional[int] = final_balances['liquid_balance'].get(rri)     
             final_balances['total_balance'][rri] = (0 if balance1 is None else balance1) + (0 if balance2 is None else balance2)
 
         return final_balances
@@ -235,7 +235,7 @@ class GatewayProvider():
         self,
         wallet_address: str,
         at_state_identifier: Optional[StateIdentifier] = None
-    ) -> Dict[str, Dict[str, int]]:
+    ) -> dict:
         """
         Returns the xrd which the account has in pending and active delegated stake positions with 
         validators, given an account address. If an account address is valid, but doesn't have any 
@@ -301,7 +301,7 @@ class GatewayProvider():
         self,
         wallet_address: str,
         at_state_identifier: Optional[StateIdentifier] = None
-    ) -> Dict[str, Dict[str, int]]:
+    ) -> dict:
         """
         Returns the xrd which the account has in pending and temporarily-locked delegated unstake 
         positions with validators, given an account address. If an account address is valid, but 
