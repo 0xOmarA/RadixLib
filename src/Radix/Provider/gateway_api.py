@@ -54,7 +54,7 @@ class GatewayProvider():
     @property
     def open_api_version(self) -> str:
         """ A getter method for the open_api_version """
-        return self.open_api_version
+        return self.__open_api_version
 
     @property
     def network(self) -> NetworkType:
@@ -101,16 +101,32 @@ class GatewayProvider():
         }
 
         # Making the request using the passed arguments
-        response: dict = requests.request(
+        response: requests.Response = requests.request(
             method = http_method,
             url = f'{self.base_url}/{endpoint}',
             json = params,
             headers = {
-                "": self.open_api_version
+                "X-Radixdlt-Target-Gw-Api": self.open_api_version
             }
-        ).json()
+        )
+        response_json: dict = response.json()
 
-        if 'error' in response.keys():
-            raise ValueError(response)
+        if 'error' in response_json.keys():
+            raise ValueError(response_json)
         else:
-            return response
+            return response_json
+
+    def get_gateway_info(self) -> dict:
+        """ 
+        Returns the Gateway API version, network and current ledger state.
+
+        # Returns
+
+        * `dict` - A dictionary of the API response
+        """
+
+        return self.__dispatch(
+            endpoint = "gateway",
+            params = {},
+            http_method = "POST"
+        )
