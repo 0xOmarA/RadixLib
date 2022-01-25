@@ -97,7 +97,7 @@ class GatewayProvider():
 
         # Adding the network_identifier to the parameters of the request
         params['network_identifier'] = {
-            "network": "mainnet" if self.__network is NetworkType.MAINNET else "stokenet"
+            "network": str(self.network)
         }
 
         # Making the request using the passed arguments
