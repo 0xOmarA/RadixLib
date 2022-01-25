@@ -174,8 +174,8 @@ class GatewayProvider():
 
         # Arguments
 
-        `wallet_address: str` - A string of the wallet address to get the balances for.
-        `at_state_identifier: Optional[StateIdentifier]` - An optional state identifier which 
+        * `wallet_address: str` - A string of the wallet address to get the balances for.
+        * `at_state_identifier: Optional[StateIdentifier]` - An optional state identifier which 
         allows a client to request a response referencing an earlier ledger state.
 
         # Returns
@@ -230,3 +230,139 @@ class GatewayProvider():
             final_balances['total_balance'][rri] = (0 if balance1 is None else balance1) + (0 if balance2 is None else balance2)
 
         return final_balances
+
+    def get_stake_positions(
+        self,
+        wallet_address: str,
+        at_state_identifier: Optional[StateIdentifier] = None
+    ) -> Dict[str, Dict[str, int]]:
+        """
+        Returns the xrd which the account has in pending and active delegated stake positions with 
+        validators, given an account address. If an account address is valid, but doesn't have any 
+        ledger transactions against it, this endpoint still returns a successful response
+
+        # Arguments
+
+        * `wallet_address: str` - A string of the wallet address to get the staking positions for.
+        * `at_state_identifier: Optional[StateIdentifier]` - An optional state identifier which 
+        allows a client to request a response referencing an earlier ledger state.
+
+        # Returns
+
+        * `dict` - A dictionary of the balances of the account in the following format
+        
+        ```json
+        {
+            "pending_stakes": [
+                {
+                    "validator_address": "address",
+                    "amount": {
+                        "xrd_rri": 123312123331233
+                    },
+                }
+            ],
+            "stakes": [
+                {
+                    "validator_address": "address",
+                    "amount": {
+                        "xrd_rri": 123312123331233
+                    },
+                }
+            ]
+        }
+        ```
+        """
+
+        # Getting the stakes from the blockchain
+        state_itentifier: dict = at_state_identifier.to_dict() if at_state_identifier is not None else {}
+        stakes: dict = self.__dispatch(
+            endpoint = "account/stakes",
+            params = {
+                "account_identifier": {
+                    "address": wallet_address
+                },
+                "at_state_identifier": state_itentifier
+            }
+        )
+
+        return {
+            key: list(map(lambda x: dict([
+                ('validator_address', x['validator_identifier']['address']),
+                ('amount', {
+                    x['delegated_stake']['token_identifier']['rri']: int(x['delegated_stake']['value'])
+                })
+            ]), value))
+            for key, value 
+            in stakes.items()
+            if key in ['pending_stakes', 'stakes']
+        }
+
+    def get_unstake_positions(
+        self,
+        wallet_address: str,
+        at_state_identifier: Optional[StateIdentifier] = None
+    ) -> Dict[str, Dict[str, int]]:
+        """
+        Returns the xrd which the account has in pending and temporarily-locked delegated unstake 
+        positions with validators, given an account address. If an account address is valid, but 
+        doesn't have any ledger transactions against it, this endpoint still returns a successful 
+        response.
+
+        # Arguments
+
+        * `wallet_address: str` - A string of the wallet address to get the staking positions for.
+        * `at_state_identifier: Optional[StateIdentifier]` - An optional state identifier which 
+        allows a client to request a response referencing an earlier ledger state.
+
+        # Returns
+
+        * `dict` - A dictionary of the balances of the account in the following format
+        
+        ```json
+        {
+            "pending_unstakes": [
+                {
+                    "validator_address": "address",
+                    "amount": {
+                        "xrd_rri": 123312123331233
+                    },
+                    "epochs_until_unlocked": 1290
+                }
+            ],
+            "unstakes": [
+                {
+                    "validator_address": "address",
+                    "amount": {
+                        "xrd_rri": 123312123331233
+                    },
+                    "epochs_until_unlocked": 1290
+                }
+            ]
+        }
+        ```
+        """
+
+        # Getting the unstakes from the blockchain
+        state_itentifier: dict = at_state_identifier.to_dict() if at_state_identifier is not None else {}
+        unstakes: dict = self.__dispatch(
+            endpoint = "account/unstakes",
+            params = {
+                "account_identifier": {
+                    "address": wallet_address
+                },
+                "at_state_identifier": state_itentifier
+            }
+        )
+
+        return {
+            key: list(map(lambda x: dict([
+                ('validator_address', x['validator_identifier']['address']),
+                ('amount', {
+                    x['delegated_stake']['token_identifier']['rri']: int(x['delegated_stake']['value'])
+                }),
+                ('epochs_until_unlocked', x['epochs_until_unlocked']),
+            ]), value))
+            for key, value 
+            in unstakes.items()
+            if key in ['pending_unstakes', 'unstakes']
+        }
