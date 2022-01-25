@@ -1,6 +1,6 @@
 from ..Types import NetworkType, StateIdentifier
 from .. import utils
-from typing import Optional, Union
+from typing import Optional, Union, Dict, List
 import requests
 
 class GatewayProvider():
@@ -146,7 +146,7 @@ class GatewayProvider():
 
         # Returns
 
-        `str` - A string of the derived wallet address
+        * `str` - A string of the derived wallet address
         """
 
         pub_key: str
@@ -167,7 +167,66 @@ class GatewayProvider():
     def get_account_balances(
         self,
         wallet_address: str,
-        at_state_identifier: Optional[StateIdentifier]
-    ) -> dict:
-        pass
+        at_state_identifier: Optional[StateIdentifier] = None
+    ) -> Dict[str, Dict[str, int]]:
+        """
+        Used to get the balance of the `wallet_address` at the specified state.
+
+        # Arguments
+
+        `wallet_address: str` - A string of the wallet address to get the balances for.
+        `at_state_identifier: Optional[StateIdentifier]` - An optional state identifier which 
+        allows a client to request a response referencing an earlier ledger state.
+
+        # Returns
+
+        * `dict` - A dictionary of the balances of the account in the following format
         
+        ```json
+        {
+            "total_balance": {
+                "rri1": 13030333302922222,
+                "rri2": 13030333302922222
+            },
+            "staking_balance": {
+                "xrd_rri": 13030333302922222
+            },
+            "liquid_balance": {
+                "rri1": 13030333302922222,
+                "rri2": 13030333302922222
+            }
+        }
+        ```
+        """
+
+        # Getting the balances from the blockchain
+        state_itentifier: dict = at_state_identifier.to_dict() if at_state_identifier is not None else {}
+        balances: dict = self.__dispatch(
+            endpoint = "account/balances",
+            params = {
+                "account_identifier": {
+                    "address": wallet_address
+                },
+                "at_state_identifier": state_itentifier
+            }
+        )
+
+        # Processing the balances into an easy to query dictionary format
+        final_balances: Dict[str, Dict[str, int]] = {
+            "total_balance": {},
+            "staking_balance": {},
+            "liquid_balance": {},
+        }
+
+        final_balances['staking_balance'][balances['account_balances']['staked_and_unstaking_balance']['token_identifier']['rri']] = int(balances['account_balances']['staked_and_unstaking_balance']['value'])
+        for token_balance in balances['account_balances']['liquid_balances']:
+            final_balances['liquid_balance'][token_balance['token_identifier']['rri']] = int(token_balance['value'])
+
+        unique_rris: List[str] = list(set(list(final_balances['staking_balance'].keys()) + list(final_balances['liquid_balance'].keys())))
+        
+        for rri in unique_rris:
+            balance1: int = final_balances['staking_balance'].get(rri)           
+            balance2: int = final_balances['liquid_balance'].get(rri)     
+            final_balances['total_balance'][rri] = (0 if balance1 is None else balance1) + (0 if balance2 is None else balance2)
+
+        return final_balances
