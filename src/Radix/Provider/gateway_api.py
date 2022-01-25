@@ -34,6 +34,7 @@ class GatewayProvider():
         """
 
         self.__open_api_version: str = open_api_version
+        self.__network: NetworkType = network
 
         # Setting the base URL based on the passed parameters
         self.__base_url: str
@@ -44,3 +45,72 @@ class GatewayProvider():
 
         # Stripping additional characters that might be at the end of the base url.
         self.__base_url = self.__base_url.strip('/\\') 
+
+    @property
+    def base_url(self) -> str:
+        """ A getter method for the base url """
+        return self.__base_url
+
+    @property
+    def open_api_version(self) -> str:
+        """ A getter method for the open_api_version """
+        return self.open_api_version
+
+    @property
+    def network(self) -> NetworkType:
+        """ A getter method for the network type """
+        return self.__network
+
+    def __str__(self) -> str:
+        """ Represents the Provider as a string """
+        return f'<GatewayProvider base_url="{self.base_url}">'
+
+    def __repr__(self) -> str:
+        """ Represents the Provider """
+        return str(self)
+
+    def __dispatch(
+        self,
+        endpoint: str,
+        params: dict,
+        http_method: Optional[str] = "POST"
+    ) -> dict:
+        """
+        Dispatches an API call of the type `http_method` to the endpoint given with the data in the
+        `params` argument.
+
+        # Arguments
+
+        * `endpoint: str` - A string of the endpoint which the call is being made to.
+        * `params: dict` - A dictionary of the data to include in the request.
+        * `http_method: str` - An optional string which defaults to POST. This argument describes 
+        the type of the request to use for the API call.
+
+        # Returns
+
+        * `dict` - A dictionary of the response from the API.
+
+        # Raises
+
+        * `ValueError` - Raised if the `error` key is found in the response
+        """
+
+        # Adding the network_identifier to the parameters of the request
+        params['network_identifier'] = {
+            "network": "mainnet" if self.__network is NetworkType.MAINNET else "stokenet"
+        }
+
+        # Making the request using the passed arguments
+        response: dict = requests.request(
+            method = http_method,
+            url = f'{self.base_url}/{endpoint}',
+            json = params,
+            headers = {
+                "": self.open_api_version
+            }
+        ).json()
+
+        if 'error' in response.keys():
+            raise ValueError(response)
+        else:
+            return response
