@@ -98,3 +98,47 @@ class TestDerive(unittest.TestCase):
         )
 
         self.assertEqual(derived_rri, expected_rri)
+
+    def test_node_address_from_public_key(self):
+        """ Test the derivation of the ndoe address from it's public key """
+
+        # The public key used for the derivation and the expected node address
+        public_key: str = "02ec5d9d797523e4785ad85f307f7039cb76b54659bd44b9ccea1faf216e582d64"
+        expected_node_address: str = "rn1qtk9m8tew537g7z6mp0nqlms889hdd2xtx75fwwvag067gtwtqkkgx22c28"
+
+        # Getting the derived address
+        derived_address: str = radix.derive.node_address_from_public_key(
+            public_key = public_key,
+            network = radix.network.MAINNET
+        )
+
+        self.assertEqual(expected_node_address, derived_address)
+
+    def test_validator_address_from_public_key(self):
+        """ Test the derivation of the ndoe address from it's public key """
+
+        # The public key used for the derivation and the expected validator address
+        public_key: str = "02ec5d9d797523e4785ad85f307f7039cb76b54659bd44b9ccea1faf216e582d64"
+        expected_validator_address: str = "rv1qtk9m8tew537g7z6mp0nqlms889hdd2xtx75fwwvag067gtwtqkkg7eqgxe"
+
+        # Getting the derived address
+        derived_address: str = radix.derive.validator_address_from_public_key(
+            public_key = public_key,
+            network = radix.network.MAINNET
+        )
+
+        self.assertEqual(expected_validator_address, derived_address)
+
+    def test_public_key_from_node_or_validator(self):
+        """ Tests the derivation of the public key from the node or validator addresses """
+
+        # The node and validator addresses to use & the expected public key
+        validator_address: str = "rv1qtk9m8tew537g7z6mp0nqlms889hdd2xtx75fwwvag067gtwtqkkg7eqgxe"
+        node_address: str = "rn1qtk9m8tew537g7z6mp0nqlms889hdd2xtx75fwwvag067gtwtqkkgx22c28"
+        public_key: str = "02ec5d9d797523e4785ad85f307f7039cb76b54659bd44b9ccea1faf216e582d64"
+        
+        # Getting the public key derived from the validator and the node addresses
+        public_key_from_node: str = radix.derive.public_key_from_node_or_validator_address(node_address)
+        public_key_from_validator: str = radix.derive.public_key_from_node_or_validator_address(validator_address)
+
+        self.assertEqual(set([public_key_from_node, public_key_from_validator]), set([public_key]))
