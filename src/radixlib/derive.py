@@ -43,6 +43,23 @@ def public_key_from_wallet_address(wallet_address: str) -> str:
         pad = False
     )[1:34]).hex()
 
+def public_key_from_node_or_validator_address(wallet_address: str) -> str:
+    """ Derives the public key for a given node or validator through their addresses.
+    
+    Args:
+        node_or_validator_address (str): The address of the node or the validator
+
+    Returns:
+        str: A string of the public key
+    """
+
+    return bytes(bech32.convertbits(
+        data = bech32.bech32_decode(wallet_address)[1], #type: ignore
+        frombits = 5,
+        tobits = 8,
+        pad = False
+    )).hex()
+
 def wallet_address_on_other_network(
     wallet_address: str,
     network: Network
@@ -101,4 +118,50 @@ def token_rri(
             frombits = 8 ,
             tobits = 5
         )
+    )
+
+def node_address_from_public_key(
+    public_key: str,
+    network: Network
+) -> str:
+    """ Derives the node address from the public key given.
+    
+    # Args:
+        public_key (str): The public key to use for the node address derivation.
+        network (Network): The network that the address is being derived for.
+
+    # Returns:
+        str: The node address
+    """
+
+    return bech32.bech32_encode(
+        hrp = network.node_hrp,
+        data = bech32.convertbits(
+            data = bytearray.fromhex(public_key), 
+            frombits = 8, 
+            tobits = 5
+        ) #type: ignore
+    )
+
+def validator_address_from_public_key(
+    public_key: str,
+    network: Network
+) -> str:
+    """ Derives the validator address from the public key given.
+    
+    # Args:
+        public_key (str): The public key to use for the validator address derivation.
+        network (Network): The network that the address is being derived for.
+
+    # Returns:
+        str: The validator address
+    """
+
+    return bech32.bech32_encode(
+        hrp = network.validator_hrp,
+        data = bech32.convertbits(
+            data = bytearray.fromhex(public_key), 
+            frombits = 8, 
+            tobits = 5
+        ) #type: ignore
     )
