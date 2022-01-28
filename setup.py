@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.0.2",
     author="Omar Abdulla",
     author_email="OmarAbdulla7@hotmail.com",
-    description="A Python package written to make the interaction with the Radix blockchain easier",
+    description="A Python API wrapper for the Gateway API of the Radix Blockchain.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/0xOmarAA/RadixLib",
