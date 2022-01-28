@@ -67,6 +67,10 @@ class StateIdentifier(Serializable):
         """ Represents an object """
         return str(self)
 
+    def __eq__(self, other: 'object') -> bool:
+        """ Checks for equality between self and other """
+        return self.to_dict() == other.to_dict() if isinstance(other, StateIdentifier) else False
+
     def to_dict(self) -> Dict[str, Any]:
         """" Converts the object to a dictionary """
         return {
