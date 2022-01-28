@@ -126,11 +126,11 @@ def node_address_from_public_key(
 ) -> str:
     """ Derives the node address from the public key given.
     
-    # Args:
+    Args:
         public_key (str): The public key to use for the node address derivation.
         network (Network): The network that the address is being derived for.
 
-    # Returns:
+    Returns:
         str: The node address
     """
 
@@ -149,11 +149,11 @@ def validator_address_from_public_key(
 ) -> str:
     """ Derives the validator address from the public key given.
     
-    # Args:
+    Args:
         public_key (str): The public key to use for the validator address derivation.
         network (Network): The network that the address is being derived for.
 
-    # Returns:
+    Returns:
         str: The validator address
     """
 
