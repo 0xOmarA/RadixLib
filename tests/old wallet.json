@@ -1,0 +1,14 @@
+{
+	"seed": "{\n\t\"memo\": \"1,643,285,672,600\",\n\t\"crypto\": {\n\t\t\"cipher\": \"AES-GCM\",\n\t\t\"cipherparams\": {\n\t\t\t\"nonce\": \"ba7e9442348c7eeaaca58127\"\n\t\t},\n\t\t\"ciphertext\": \"a9e6c7a19fd8527be4200351b2c8cab6\",\n\t\t\"kdf\": \"scrypt\",\n\t\t\"kdfparams\": {\n\t\t\t\"costParameterN\": 8192,\n\t\t\t\"costParameterC\": 262144,\n\t\t\t\"blockSize\": 8,\n\t\t\t\"parallelizationParameter\": 1,\n\t\t\t\"lengthOfDerivedKey\": 32,\n\t\t\t\"salt\": \"e2017c55dd20197a3b6eddd6a78dad9c137e00f169b2b5eea12ef28453862c03\"\n\t\t},\n\t\t\"mac\": \"f08189d91dd67b708c3c53914e328927\"\n\t},\n\t\"id\": \"caec471ebb07e0c9\",\n\t\"version\": 1\n}",
+	"wallets": {
+		"MAINNET": {
+			"derivedAccountsIndex": 0
+		}
+	},
+	"pin": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+	"selectedNode": "https://mainnet.radixdlt.com",
+	"selectedNodeHash": "30450221008e446d5656a906c8189a5f3fb8011c69e99b7ad4e5760f4fb41696f0020e16fe02206c7295e7acd634294ea064cfb4a5be4f53b2bdf18ce8b45e975f452bd55ce72a",
+	"account": {
+		"rdx1qspz8wslrhhch7lfw0mukwv386608purn3v4sa62k7wq6m4nv2xejrcmqcvl2": "Omar's Test Wallet"
+	}
+}
