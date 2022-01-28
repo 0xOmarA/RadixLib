@@ -2,14 +2,14 @@ from radixlib.serializable import Serializable
 from typing import Dict
 import json
 
-class ValiditorIdentifier(Serializable):
-    """ The implementation of an ValiditorIdentifier """
+class ValidatorIdentifier(Serializable):
+    """ The implementation of an ValidatorIdentifier """
 
     def __init__(
         self,
         address: str
     ) -> None:
-        """ Instantiates a new ValiditorIdentifier from the validator address """
+        """ Instantiates a new ValidatorIdentifier from the validator address """
 
         self.address: str = address
 
@@ -20,6 +20,10 @@ class ValiditorIdentifier(Serializable):
     def __repr__(self) -> str:
         """ Represents an object """
         return str(self)
+
+    def __eq__(self, other: 'object') -> bool:
+        """ Checks for equality between self and other """
+        return self.address == other.address if isinstance(other, ValidatorIdentifier) else False
 
     def to_dict(self) -> Dict[str, str]:
         """" Converts the object to a dictionary """
@@ -35,17 +39,17 @@ class ValiditorIdentifier(Serializable):
     def from_dict(
         cls,
         dictionary: Dict[str, str]
-    ) -> 'ValiditorIdentifier':
-        """ Creates a new instance of the ValiditorIdentifier from a dictionary
+    ) -> 'ValidatorIdentifier':
+        """ Creates a new instance of the ValidatorIdentifier from a dictionary
 
-        This method is used to load up an ValiditorIdentifier from the dictionaries that are returned
+        This method is used to load up an ValidatorIdentifier from the dictionaries that are returned
         by the Gateway API.
 
         Args:
-            dictionary (dict): A dictionary of the ValiditorIdentifier obtained from the Gateway API.
+            dictionary (dict): A dictionary of the ValidatorIdentifier obtained from the Gateway API.
 
         Returns:
-            ValiditorIdentifier: An ValiditorIdentifier loaded with the data
+            ValidatorIdentifier: An ValidatorIdentifier loaded with the data
         """
 
         return cls(address = dictionary['address'])
@@ -54,17 +58,17 @@ class ValiditorIdentifier(Serializable):
     def from_json_string(
         cls,
         json_string: str
-    ) -> 'ValiditorIdentifier':
-        """ Creates a new instance of the ValiditorIdentifier from a string
+    ) -> 'ValidatorIdentifier':
+        """ Creates a new instance of the ValidatorIdentifier from a string
 
-        This method is used to load up an ValiditorIdentifier from the strings that are returned
+        This method is used to load up an ValidatorIdentifier from the strings that are returned
         by the Gateway API.
 
         Args:
             json_string (str): The JSON serialzable strings returnd by the gateway API.
 
         Returns:
-            ValiditorIdentifier: An ValiditorIdentifier loaded with the data
+            ValidatorIdentifier: An ValidatorIdentifier loaded with the data
         """
 
         return cls.from_dict(json.loads(json_string))

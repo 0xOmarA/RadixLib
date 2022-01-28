@@ -21,6 +21,10 @@ class AccountIdentifier(Serializable):
         """ Represents an object """
         return str(self)
 
+    def __eq__(self, other: 'object') -> bool:
+        """ Checks for equality between self and other """
+        return self.address == other.address if isinstance(other, AccountIdentifier) else False
+
     def to_dict(self) -> Dict[str, str]:
         """" Converts the object to a dictionary """
         return {

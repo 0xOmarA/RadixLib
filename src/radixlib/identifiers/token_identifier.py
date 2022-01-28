@@ -21,6 +21,10 @@ class TokenIdentifier(Serializable):
         """ Represents an object """
         return str(self)
 
+    def __eq__(self, other: 'object') -> bool:
+        """ Checks for equality between self and other """
+        return self.rri == other.rri if isinstance(other, TokenIdentifier) else False
+
     def to_dict(self) -> Dict[str, str]:
         """" Converts the object to a dictionary """
         return {
