@@ -47,3 +47,4 @@ env
 build
 build.sh
 **.egg-info
+.mypy_cache
