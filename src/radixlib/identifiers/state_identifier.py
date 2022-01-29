@@ -61,7 +61,7 @@ class StateIdentifier(Serializable):
 
     def __str__(self) -> str:
         """ Converts the object to a string """
-        return f"""StateIdentifier({", ".join(map(lambda x: "%s=%s" % x, utils.remove_none_values_recursively(self.to_dict()).items()))})"""
+        return f"""StateIdentifier({", ".join(map(lambda x: "%s=%s" % x, self.to_dict().items()))})"""
 
     def __repr__(self) -> str:
         """ Represents an object """
@@ -73,12 +73,12 @@ class StateIdentifier(Serializable):
 
     def to_dict(self) -> Dict[str, Any]:
         """" Converts the object to a dictionary """
-        return {
+        return utils.remove_none_values_recursively({
             "version": self.version,
             "timestamp": self.timestamp.astimezone(pytz.UTC).isoformat().replace('+00:00', 'Z') if self.timestamp is not None else None,
             "epoch": self.epoch,
             "round": self.round,
-        }
+        })
 
     def to_json_string(self) -> str:
         """ Converts the object to a JSON string """
