@@ -3,6 +3,11 @@ from radixlib.exceptions.non_json_response import NonJsonResponseError
 from radixlib.identifiers.transaction_identifier import TransactionIdentifier
 from radixlib.actions import (
     CreateTokenDefinition,
+    TransferTokens,
+    UnstakeTokens,
+    StakeTokens,
+    MintTokens,
+    BurnTokens,
 )
 from radixlib.network import Network
 import radixlib as radix
@@ -454,7 +459,7 @@ class Provider():
 
     def build_transaction(
         self,
-        actions: List[Union[CreateTokenDefinition, None]],
+        actions: List[Union[CreateTokenDefinition, TransferTokens, UnstakeTokens, StakeTokens, MintTokens, BurnTokens]],
         fee_payer: AccountIdentifier,
         message_bytes: Optional[Union[str, bytes, bytearray]] = None,
         state_identifier: Optional[StateIdentifier] = None,
