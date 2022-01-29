@@ -1,6 +1,9 @@
 from radixlib.identifiers import NetworkIdentifier, StateIdentifier, AccountIdentifier, TokenIdentifier, ValidatorIdentifier
 from radixlib.exceptions.non_json_response import NonJsonResponseError
 from radixlib.identifiers.transaction_identifier import TransactionIdentifier
+from radixlib.actions import (
+    CreateTokenDefinition,
+)
 from radixlib.network import Network
 import radixlib as radix
 
@@ -344,7 +347,7 @@ class Provider():
         return self.__dispatch(
             endpoint = "token/derive",
             params = {
-                "symbol": symbol,
+                "symbol": symbol.lower(),
                 "public_key": {
                     "hex": pub_key
                 }
@@ -451,7 +454,7 @@ class Provider():
 
     def build_transaction(
         self,
-        actions: List[Dict[Any, Any]],
+        actions: List[Union[CreateTokenDefinition, None]],
         fee_payer: AccountIdentifier,
         message_bytes: Optional[Union[str, bytes, bytearray]] = None,
         state_identifier: Optional[StateIdentifier] = None,
@@ -479,7 +482,7 @@ class Provider():
             endpoint = "transaction/build",
             params = {
                 "at_state_identifier": state_identifier,
-                "actions": actions,
+                "actions": list(map(lambda x: x.to_dict(), actions)),
                 "fee_payer": fee_payer,
                 "message": message_bytes.hex() if isinstance(message_bytes, (bytes, bytearray)) else message_bytes,
                 "disable_token_mint_and_burn": disable_token_mint_and_burn

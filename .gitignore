@@ -49,3 +49,5 @@ build.sh
 **.egg-info
 .mypy_cache
 typings
+tx.json
+my_notes.md
