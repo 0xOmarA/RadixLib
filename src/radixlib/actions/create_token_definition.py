@@ -113,7 +113,7 @@ class CreateTokenDefinition(Serializable):
         cls, 
         dictionary: Dict[Any, Any]
     ) -> 'CreateTokenDefinition':
-        """ Loads a CreateTokenDefinition from a dictionary 
+        """ Loads a CreateTokenDefinition from a Gateway API response dictionary
         
         Args:
             dictionary (dict): The dictionary to load the object from
@@ -124,8 +124,10 @@ class CreateTokenDefinition(Serializable):
         Raises: 
             TypeError: Raised when the type of the action in the dictionary does not match
                 the action name of the class
-
         """
+
+        if dictionary.get('type') != "CreateTokenDefinition":
+            raise TypeError(f"Expected a dictionary with a type of CreateTokenDefinition but got: {dictionary.get('type')}")
 
         return cls(
             owner = AccountIdentifier(
@@ -150,4 +152,5 @@ class CreateTokenDefinition(Serializable):
         cls,
         json_string: str
     ) -> 'CreateTokenDefinition':
+        """ Loads a CreateTokenDefinition from a Gateway API response JSON string. """
         return cls.from_dict(json.loads(json_string))
