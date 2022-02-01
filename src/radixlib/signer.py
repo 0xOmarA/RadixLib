@@ -234,7 +234,7 @@ class Signer():
 
     def wallet_address(
         self,
-        network: radix.network.Network,
+        network: radix.network.Network = radix.network.MAINNET,
         index: int = 0
     ) -> str:
         """ Derives the wallet address asociated with this signer object.
@@ -246,8 +246,10 @@ class Signer():
         to call the derive module for it.
         
         Args:
-            network (Network): The network to get the address for.
-            index (int): The index of the address to derive the wallet address for.
+            network (Network): The network to get the address for. Defaults to the mainnet when no
+                argument is supplied.
+            index (int): The index of the address to derive the wallet address for. Defaults to 
+                address index 0 when no argument is supplied.
 
         Returns:
             str: A string of the wallet address.
