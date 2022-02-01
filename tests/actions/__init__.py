@@ -1,0 +1,7 @@
+# type: ignore
+
+from tests.actions.test_transfer_tokens_action import TestTransferTokensAction
+from tests.actions.test_mutable_token_action import TestMutableTokenAction
+from tests.actions.test_fixed_token_action import TestFixedTokenAction
+from tests.actions.test_mint_tokens_action import TestMintTokensAction
+from tests.actions.test_burn_tokens_action import TestBurnTokensAction
