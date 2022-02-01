@@ -6,13 +6,13 @@ import radixlib as radix
 import json
 
 class UnstakeTokens(Serializable):
-    """ Defines a UnstakeTokens action  """
+    """ Defines an UnstakeTokens action  """
 
     def __init__(
         self,
         to_account: str,
         from_validator: str,
-        unstake_percentage: Optional[float],
+        unstake_percentage: Optional[float] = None,
         amount: Optional[int] = None,
         token_rri: Optional[str] = None,
     ) -> None:
@@ -33,6 +33,12 @@ class UnstakeTokens(Serializable):
                 #. The unstake percentage alone.
 
             One of the above two choices must be specified for a successful constructor call.
+
+        Raises:
+            ValueError: Raised in the following cases:
+
+                #. When the token RRI given is not of the native XRD token.
+                #. When the percentage amount given is not between 0 and 100.
         """
 
         # Checking if all of the arguments are none.
@@ -46,6 +52,8 @@ class UnstakeTokens(Serializable):
         # Checking which of the aguments to set
         if unstake_percentage is not None:
             self.unstake_percentage: float = unstake_percentage
+            if not (0 <= self.unstake_percentage <= 100):
+                raise ValueError("The unstake percentage must be a number between 0 and 100.")
         elif amount is not None and token_rri is not None:
             self.amount: int = amount
             self.token_rri: str = token_rri

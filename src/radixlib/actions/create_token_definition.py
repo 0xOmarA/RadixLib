@@ -53,6 +53,8 @@ class CreateTokenDefinition(Serializable):
                     True
                 #. When the token supply or the to_account are not supplied when the 
                     is_supply_mutable is False
+                #. When the symbol given is not all lower case.
+                #. When the symbol's length is not between 3 and 8.
         """
 
         # Checking for incorrect usage of the to_account and token_supply arguments
@@ -68,6 +70,12 @@ class CreateTokenDefinition(Serializable):
                 "You must specify 'token_supply' and the 'to_account' arguments when creating a "
                 "fixed supply token and remove the specification for the token owner."
             )
+
+        # Checking if the provided symbol for the token is valid
+        if not symbol.islower():
+            raise ValueError("Token symbols must be all lower case letters.")
+        if not (3 <= len(symbol) <= 8):
+            raise ValueError("Token symbols must be 3 to 8 characters long.")
 
         self.owner: Optional[AccountIdentifier] = AccountIdentifier(owner) if owner is not None else None
         self.name: str = name
