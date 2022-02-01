@@ -1,3 +1,4 @@
 # type: ignore
 
-from tests.api_types_tests.test_token_amount import TestTokenAmount
+from tests.api_types.test_token_identifier import TestTokenIdentifier
+from tests.api_types.test_token_amount import TestTokenAmount
