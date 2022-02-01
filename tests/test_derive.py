@@ -145,17 +145,17 @@ class TestDerive(unittest.TestCase):
     def test_derive_xrd_rri_on_mainnet(self):
         """ Tests the derivation of the XRD RRI on the mainnet """
 
-        self.assertEqual( radix.derive.xrd_rri_on_network(radix.network.MAINNET), 'xrd_rr1qy5wfsfh' )
+        self.assertEqual(radix.derive.xrd_rri_on_network(radix.network.MAINNET), 'xrd_rr1qy5wfsfh')
 
     def test_derive_xrd_rri_on_stokenet(self):
         """ Tests the derivation of the XRD RRI on the stokenet """
 
-        self.assertEqual( radix.derive.xrd_rri_on_network(radix.network.STOKENET), 'xrd_tr1qyf0x76s' )
+        self.assertEqual(radix.derive.xrd_rri_on_network(radix.network.STOKENET), 'xrd_tr1qyf0x76s')
 
     def test_derive_xrd_rri_on_betanet(self):
         """ Tests the derivation of the XRD RRI on the betanet """
 
-        self.assertEqual( radix.derive.xrd_rri_on_network(radix.network.BETANET), 'xrd_br1qy73gwac' )
+        self.assertEqual(radix.derive.xrd_rri_on_network(radix.network.BETANET), 'xrd_br1qy73gwac')
 
     def test_derive_xrd_rri_on_localnet(self):
         """ Tests the derivation of the XRD RRI on the localnet """
@@ -169,4 +169,4 @@ class TestDerive(unittest.TestCase):
             node_hrp = "dn"
         )
 
-        self.assertEqual( radix.derive.xrd_rri_on_network(network), 'xrd_dr1qyrs8qwl' )
+        self.assertEqual(radix.derive.xrd_rri_on_network(network), 'xrd_dr1qyrs8qwl')
