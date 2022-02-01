@@ -165,3 +165,23 @@ def validator_address_from_public_key(
             tobits = 5
         ) #type: ignore
     )
+
+def xrd_rri_on_network(network: Network):
+    """ Derives the RRI of the native token (XRD) on the given network.
+    
+    Args:
+        network (Network): The network to derive the XRD RRI for.
+
+    Returns:
+        str: A string of the XRD RRI on that network.
+    """
+
+    # To derive the RRI of XRD on another network, we need to use it's RRI on a known network first
+    # to get the data from the bech32 encoded RRI. So, the operation that we're esentially doing is
+    # just re-encoding the data with a different HRP.
+    known_rri: str = "xrd_rr1qy5wfsfh"
+
+    return bech32.bech32_encode(
+        hrp = f"xrd{network.resource_hrp_suffix}",
+        data = bytearray(bech32.bech32_decode(known_rri)[1]) # type: ignore
+    )
