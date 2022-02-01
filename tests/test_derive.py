@@ -1,7 +1,6 @@
 import radixlib as radix
 import unittest
 
-
 class TestDerive(unittest.TestCase):
     """ Unit tests for the derive functions """
 
@@ -142,3 +141,32 @@ class TestDerive(unittest.TestCase):
         public_key_from_validator: str = radix.derive.public_key_from_node_or_validator_address(validator_address)
 
         self.assertEqual(set([public_key_from_node, public_key_from_validator]), set([public_key]))
+
+    def test_derive_xrd_rri_on_mainnet(self):
+        """ Tests the derivation of the XRD RRI on the mainnet """
+
+        self.assertEqual( radix.derive.xrd_rri_on_network(radix.network.MAINNET), 'xrd_rr1qy5wfsfh' )
+
+    def test_derive_xrd_rri_on_stokenet(self):
+        """ Tests the derivation of the XRD RRI on the stokenet """
+
+        self.assertEqual( radix.derive.xrd_rri_on_network(radix.network.STOKENET), 'xrd_tr1qyf0x76s' )
+
+    def test_derive_xrd_rri_on_betanet(self):
+        """ Tests the derivation of the XRD RRI on the betanet """
+
+        self.assertEqual( radix.derive.xrd_rri_on_network(radix.network.BETANET), 'xrd_br1qy73gwac' )
+
+    def test_derive_xrd_rri_on_localnet(self):
+        """ Tests the derivation of the XRD RRI on the localnet """
+
+        # The network definition of the localnet
+        network: radix.network.Network = radix.network.Network(
+            name = "localnet",
+            account_hrp = "ddx",
+            resource_hrp_suffix = "_dr",
+            validator_hrp = "dv",
+            node_hrp = "dn"
+        )
+
+        self.assertEqual( radix.derive.xrd_rri_on_network(network), 'xrd_dr1qyrs8qwl' )
