@@ -8,9 +8,6 @@ from radixlib.actions.stake_tokens import StakeTokens
 from radixlib.actions.mint_tokens import MintTokens
 from radixlib.actions.burn_tokens import BurnTokens
 
-# Imports of the action builder
-from radixlib.actions.action_builder import ActionBuilder
-
 # Creating an action type
 from typing import Union as __Union, TypeAlias
 ActionType: TypeAlias = __Union[
