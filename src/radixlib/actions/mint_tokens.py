@@ -32,8 +32,9 @@ class MintTokens(Serializable):
                 "to_account": self.to_account,
                 "amount": {
                     "value": str(self.amount),
-                    "token_identifier": TokenIdentifier(rri=self.token_rri)
-                }
+                    "token_identifier": TokenIdentifier(rri=self.token_rri).to_dict()
+                },
+                "type": "MintTokens"
             })
         )
 

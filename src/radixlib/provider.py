@@ -114,10 +114,10 @@ class Provider():
 
         # Checking the type of the content sent back from the API. If the content is in JSON then
         # we are good. If not then we throw an exception.
-        if "application/json" not in response.headers['content-type']:
+        if "application/json" not in str(response.headers.get('content-type')):
             raise NonJsonResponseError(
                 f"The provider expects a JSON response but got a response of the type: "
-                f"{response.headers['content-type']}. Response: {response.text}"
+                f"{str(response.headers.get('content-type'))}. Response: {response.text}"
             )
 
         # Converting the response body to JSON and checking if there are errors in the response

@@ -38,7 +38,8 @@ class TransferTokens(Serializable):
                 "amount": {
                     "value": str(self.amount),
                     "token_identifier": TokenIdentifier(rri=self.token_rri)
-                }
+                },
+                "type": "TransferTokens"
             })
         )
 
