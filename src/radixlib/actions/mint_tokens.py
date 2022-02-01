@@ -29,7 +29,7 @@ class MintTokens(Serializable):
     def to_dict(self) -> Dict[str, Any]:
         """" Converts the object to a dictionary """
         return radix.utils.remove_none_values_recursively(
-            radix.utils.convert_to_dict_recursively({
+            radix.utils.convert_to_dict_recursively({ # type: ignore
                 "type": "MintTokens",
                 "to_account": self.to_account,
                 "amount": TokenAmount(

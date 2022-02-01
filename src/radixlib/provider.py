@@ -440,7 +440,7 @@ class Provider():
     def build_transaction(
         self,
         actions: Union[List[ActionType], radix.ActionBuilder],
-        fee_payer: AccountIdentifier,
+        fee_payer: str,
         message_bytes: Optional[Union[str, bytes, bytearray]] = None,
         state_identifier: Optional[StateIdentifier] = None,
         disable_token_mint_and_burn: Optional[bool] = None,
@@ -450,8 +450,7 @@ class Provider():
         Args:
             actions (Union[List[ActionType], radix.ActionBuilder]): Either a list of actions or an
                 ActionBuilder used to build create the actions.
-            fee_payer (AccountIdentifier): An account identifier of the person paying the fees for 
-                the transaction.
+            fee_payer (str): The address of the wallet paying the fees of the transaction.
             message_bytes (Union[str, bytes, bytearray], optional): An optional argument for the 
                 message to include in the transaction. This argument expects the bytes to be passed 
                 to it. So, this should either be the hex string of the bytes or a bytes object.
@@ -469,7 +468,7 @@ class Provider():
             params = {
                 "at_state_identifier": state_identifier,
                 "actions": actions if isinstance(actions, list) else actions.to_action_list(),
-                "fee_payer": fee_payer,
+                "fee_payer": AccountIdentifier(fee_payer),
                 "message": message_bytes.hex() if isinstance(message_bytes, (bytes, bytearray)) else message_bytes,
                 "disable_token_mint_and_burn": disable_token_mint_and_burn
             }
