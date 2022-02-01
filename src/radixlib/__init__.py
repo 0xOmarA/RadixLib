@@ -7,4 +7,5 @@ import radixlib.derive as derive
 import radixlib.utils as utils
 
 from radixlib.actions.action_builder import ActionBuilder
+from radixlib.provider import Provider
 from radixlib.signer import Signer

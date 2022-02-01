@@ -1,5 +1,5 @@
 from radixlib.serializable import Serializable
-from typing import Dict, Any
+from typing import Dict, Any, Union, List, Tuple, Set
 
 
 def remove_none_values_recursively(dictionary: Dict[Any, Any]) -> Dict[Any, Any]:
@@ -21,30 +21,54 @@ def remove_none_values_recursively(dictionary: Dict[Any, Any]) -> Dict[Any, Any]
         if value is not None
     }
 
-def convert_to_dict_recursively(dictionary: Dict[Any, Any]) -> Dict[Any, Any]:
-    """ Converts the dictionary passed to it to a dictionary if it has Serializable objects.
+def convert_to_dict_recursively(
+    iterable: Union[Dict[Any, Any], List[Any], Tuple[Any], Set[Any]]
+) -> Union[Dict[Any, Any], List[Any], Tuple[Any], Set[Any]]:
+    """ Converts the individual items in an iterable to a dictionary if they're an instance of the
+    Serializable class.
 
-    This function recursively checks for Serializable objects in the dictionary passed to it and 
+    This function recursively checks for Serializable objects in the iterable passed to it and 
     invokes the `to_dict` method on all of the objects that if finds which are Serializable. This 
     function is excuted on the objects which have been converted to a dictionary to ensure that 
     the entire dictionary is in a valid format.
 
     Args:
-        dictionary (dict): The dictionary to look for the Serializable objects in and to convert to 
-            dict.
+        iterable (Union[Dict[Any, Any], List[Any], Tuple[Any], Set[Any]]): An iterable which could 
+            be a dictionary, list, tuple, or set to convert all of its Serializable objects into 
+            their dictionary form.
 
     Returns:
-        dict: A dictionary with the .to_dict method invoked on all of the Serializable objects.
+        Union[Dict[Any, Any], List[Any], Tuple[Any], Set[Any]]: The iterable object reconstructed
+            with all of the Serializable objects converted into a dictionary.
     
     """
-    new_dict: Dict[Any, Any] = {}
+    if isinstance(iterable, dict):
+        new_dict: Dict[Any, Any] = {}
     
-    for key, value in dictionary.items():
-        if isinstance(value, Serializable):
-            new_dict[key] = convert_to_dict_recursively(value.to_dict())
-        elif isinstance(value, dict):
-            new_dict[key] = convert_to_dict_recursively(value) # type: ignore
-        else:
-            new_dict[key] = value
+        for key, value in iterable.items():
+            if isinstance(value, Serializable):
+                new_dict[key] = convert_to_dict_recursively(value.to_dict())
+            elif isinstance(value, (dict, list, tuple, set)):
+                new_dict[key] = convert_to_dict_recursively(value) # type: ignore
+            else:
+                new_dict[key] = value
 
-    return new_dict
+        return new_dict
+    
+    elif isinstance(iterable, (list, tuple, set)): # type: ignore
+        new_list: List[Any] = []
+
+        for item in iterable:
+            if isinstance(item, Serializable):
+                new_list.append(convert_to_dict_recursively(item.to_dict()))
+            elif isinstance(item, (dict, list, tuple, set)):
+                new_list.append(convert_to_dict_recursively(item)) # type: ignore
+            else:
+                new_list.append(item)
+
+        return type(iterable)(new_list)
+        
+    else:
+        raise NotImplementedError(
+            f"No implementation for convert_to_dict_recursively available for: {type(iterable)}."
+        )
