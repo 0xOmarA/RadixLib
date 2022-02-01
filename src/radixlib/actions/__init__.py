@@ -6,3 +6,13 @@ from radixlib.actions.unstake_tokens import UnstakeTokens
 from radixlib.actions.stake_tokens import StakeTokens
 from radixlib.actions.mint_tokens import MintTokens
 from radixlib.actions.burn_tokens import BurnTokens
+
+from typing import Union as __Union, TypeAlias
+ActionType: TypeAlias = __Union[
+    CreateTokenDefinition,
+    TransferTokens,
+    UnstakeTokens,
+    StakeTokens,
+    MintTokens,
+    BurnTokens
+]

@@ -6,6 +6,7 @@ from radixlib.actions import (
     StakeTokens,
     MintTokens,
     BurnTokens,
+    ActionType
 )
 from typing import Union, List
 import radixlib as radix
@@ -34,7 +35,7 @@ class ActionBuilder():
         """
 
         self.network: Network = network
-        self.__actions_list: List[Union[CreateTokenDefinition,TransferTokens,UnstakeTokens,StakeTokens,MintTokens,BurnTokens]] = []
+        self.__actions_list: List[ActionType] = []
 
     def new_mutable_token(
         self,
@@ -323,6 +324,6 @@ class ActionBuilder():
 
         return self
 
-    def to_action_list(self) -> List[Union[CreateTokenDefinition,TransferTokens,UnstakeTokens,StakeTokens,MintTokens,BurnTokens]]:
+    def to_action_list(self) -> List[ActionType]:
         """ Gets a list of the actions that have been created by the action builder so far """
         return self.__actions_list
