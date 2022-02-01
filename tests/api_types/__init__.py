@@ -1,5 +1,7 @@
 # type: ignore
 
+from tests.api_types.test_transaction_identifier import TestTransactionIdentifier
+from tests.api_types.test_validator_identifier import TestValidatorIdentifier
 from tests.api_types.test_account_identifier import TestAccountIdentifier
 from tests.api_types.test_network_identifier import TestNetworkIdentifier
 from tests.api_types.test_state_identifier import TestStateIdentifier
