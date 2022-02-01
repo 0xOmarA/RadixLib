@@ -41,23 +41,23 @@ class StateIdentifier(Serializable):
                 #. Only the epoch and round is defined.
         """
 
-         # Setting the arguments to the variables 
+        # Checking the state identifier to ensure that it is a valid state identifier.
+        # These checks are done due to: https://github.com/radixdlt/radixdlt-network-gateway/blob/c473fab883a53f8821842013336d0db5d2cb0258/src/GatewayAPI/Database/LedgerStateQuerier.cs#L251
+        none_set: Set[None] = set([None])
+        is_all_missing: bool = set([version, timestamp, epoch, round]) == none_set
+        only_state_version: bool = version is not None and set([timestamp, epoch, round]) == none_set
+        only_timestamp: bool = timestamp is not None and set([version, epoch, round]) == none_set
+        only_epoch_given: bool = epoch is not None and set([timestamp, version, round]) == none_set
+        epoch_and_round_given: bool = epoch is not None and round is not None and set([timestamp, version]) == none_set
+        
+        if [is_all_missing, only_state_version, only_timestamp, only_epoch_given, epoch_and_round_given].count(True) != 1:
+            raise ValueError("The at_state_identifier was not either (A) missing (B) with only a state_version; (C) with only a Timestamp; (D) with only an Epoch; or (E) with only an Epoch and Round")
+
+        # Setting the arguments to the variables 
         self.version: Optional[int] = version
         self.timestamp: Optional[datetime] = timestamp
         self.epoch: Optional[int] = epoch
         self.round: Optional[int] = round
-
-        # Checking the state identifier to ensure that it is a valid state identifier.
-        # These checks are done due to: https://github.com/radixdlt/radixdlt-network-gateway/blob/c473fab883a53f8821842013336d0db5d2cb0258/src/GatewayAPI/Database/LedgerStateQuerier.cs#L251
-        none_set: Set[None] = set([None])
-        is_all_missing: bool = set([self.version, self.timestamp, self.epoch, self.round]) == none_set
-        only_state_version: bool = self.version is not None and set([self.timestamp, self.epoch, self.round]) == none_set
-        only_timestamp: bool = self.timestamp is not None and set([self.version, self.epoch, self.round]) == none_set
-        only_epoch_given: bool = self.epoch is not None and set([self.timestamp, self.version, self.round]) == none_set
-        epoch_and_round_given: bool = self.epoch is not None and self.round is not None and set([self.timestamp, self.version]) == none_set
-        
-        if [is_all_missing, only_state_version, only_timestamp, only_epoch_given, epoch_and_round_given].count(True) != 1:
-            raise ValueError("The at_state_identifier was not either (A) missing (B) with only a state_version; (C) with only a Timestamp; (D) with only an Epoch; or (E) with only an Epoch and Round")
 
     def __str__(self) -> str:
         """ Converts the object to a string """
@@ -75,7 +75,7 @@ class StateIdentifier(Serializable):
         """" Converts the object to a dictionary """
         return utils.remove_none_values_recursively({
             "version": self.version,
-            "timestamp": self.timestamp.astimezone(pytz.UTC).isoformat().replace('+00:00', 'Z') if self.timestamp is not None else None,
+            "timestamp": self.timestamp.astimezone(pytz.UTC).isoformat()[:23] + 'Z' if self.timestamp is not None else None,
             "epoch": self.epoch,
             "round": self.round,
         })
