@@ -5,7 +5,7 @@ import radixlib as radix
 import json
 
 class StakeTokens(Serializable):
-    """ Defines a StakeTokens action  """
+    """ Defines a StakeTokens action. """
 
     def __init__(
         self,
