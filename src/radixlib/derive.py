@@ -185,3 +185,27 @@ def xrd_rri_on_network(network: Network):
         hrp = f"xrd{network.resource_hrp_suffix}",
         data = bytearray(bech32.bech32_decode(known_rri)[1]) # type: ignore
     )
+
+def xrd_from_atto(atto_amount: int) -> float:
+    """ Converts an amount of Atto to their XRD equivalent
+    
+    Args:
+        atto_amount (int): The amount of atto to get in XRD.
+
+    Returns:
+        float: The equivalent amount of XRD.
+    """
+
+    return atto_amount / (10**18)
+
+def atto_from_xrd(xrd_amount: float) -> int:
+    """ Converts an amount of XRD to their Atto equivalent
+    
+    Args:
+        xrd_amount (int): The amount of XRD to get in Atto.
+
+    Returns:
+        float: The equivalent amount of Atto.
+    """
+
+    return xrd_amount * 10**18
