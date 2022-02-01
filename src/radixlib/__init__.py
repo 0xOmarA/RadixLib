@@ -1,6 +1,6 @@
 # type: ignore
 
-import radixlib.identifiers as identifiers
+import radixlib.api_types as api_types
 import radixlib.network as network
 import radixlib.derive as derive
 import radixlib.utils as utils
