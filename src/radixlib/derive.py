@@ -1,4 +1,4 @@
-from .network import Network
+from radixlib.network import Network
 import hashlib
 import bech32
 
