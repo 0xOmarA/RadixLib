@@ -48,12 +48,7 @@ class Signer():
                 private keys.
         """
 
-        self.__seed: Union[bytes, bytearray] = seed if isinstance(seed, (bytes, bytearray)) else seed.encode()
-
-    @property
-    def seed(self) -> Union[bytes, bytearray]:
-        """ A getter method for the seed phrase """
-        return self.__seed
+        self.seed: Union[bytes, bytearray] = seed if isinstance(seed, (bytes, bytearray)) else seed.encode()
 
     @classmethod
     def new_random(cls) -> 'Signer':
@@ -170,7 +165,7 @@ class Signer():
         """
 
         hdwallet: HDWallet = HDWallet()
-        hdwallet.from_seed(seed=self.__seed.hex())
+        hdwallet.from_seed(seed=self.seed.hex())
         for _, values_tuple in self.HD_WALLET_PARAMS.items():
             value, hardened = values_tuple
             hdwallet.from_index(value, hardened=hardened)
