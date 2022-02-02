@@ -208,4 +208,4 @@ def atto_from_xrd(xrd_amount: float) -> int:
         float: The equivalent amount of Atto.
     """
 
-    return xrd_amount * 10**18
+    return int(xrd_amount * 10**18)
