@@ -74,8 +74,8 @@ class CreateTokenDefinition(Serializable):
         # Checking if the provided symbol for the token is valid
         if not symbol.islower():
             raise ValueError("Token symbols must be all lower case letters.")
-        if not (3 <= len(symbol) <= 8):
-            raise ValueError("Token symbols must be 3 to 8 characters long.")
+        if not (2 <= len(symbol) <= 8):
+            raise ValueError(f"Token symbols must be 2 to 8 characters long.")
 
         self.owner: Optional[AccountIdentifier] = AccountIdentifier(owner) if owner is not None else None
         self.name: str = name
