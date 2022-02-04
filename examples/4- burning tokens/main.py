@@ -14,10 +14,10 @@ def main() -> None:
     # Defining the network that the token will be created on
     network: radix.network.Network = radix.network.STOKENET
 
-    # Getting the mnemonic phrase for the wallet that we will be connecting to and using to create
-    # the token. In this case, my mnemonic phrase is stored in an envirnoment variable under the 
-    # name "MNEMONIC_PHRASE". You might want to do the same or you could also just put your mnemonic
-    # phrase as a literal string. 
+    # Getting the mnemonic phrase for the wallet that we will be connecting to. In this case, my 
+    # mnemonic phrase is stored in an envirnoment variable under the name "MNEMONIC_PHRASE". 
+    # You might want to do the same or you could also just put your mnemonic phrase as a literal 
+    # string. 
     mnemonic_phrase: str = os.environ['MNEMONIC_PHRASE']
 
     # Creating a new wallet object using the mnemonic phrase above on the network defined.
