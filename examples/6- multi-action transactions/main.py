@@ -24,7 +24,7 @@ def main() -> None:
     token_rri: str = radix.constants.XRD_RRI['stokenet']
     transfer_amount: int = radix.derive.atto_from_xrd(10) # 10 XRD for each address
 
-    # Defining the network that the token will be created on
+    # Defining the network that we will be connecting to.
     network: radix.network.Network = radix.network.STOKENET
 
     # Getting the mnemonic phrase for the wallet that we will be connecting to. In this case, my 

@@ -15,7 +15,7 @@ def main() -> None:
     # The RRI of the token that we're querying the blockchain for.
     token_rri: str = "fix_tr1qdaj7qea3xz8gup5lgaw8duwwwc3z60w9vrnr7p0xr4q98vkk6"
 
-    # Defining the network that the token will be created on
+    # Defining the network that we will be connecting to.
     network: radix.network.Network = radix.network.STOKENET
 
     # Getting the mnemonic phrase for the wallet that we will be connecting to. In this case, my 

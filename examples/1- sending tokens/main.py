@@ -13,7 +13,7 @@ def main() -> None:
     transfer_amount: int = radix.derive.atto_from_xrd(10) # We will be sending them 10 XRD.
     transaction_message: str = "Here is some XRD for your birthday!"
 
-    # Defining the network that the token will be created on
+    # Defining the network that we will be connecting to.
     network: radix.network.Network = radix.network.STOKENET
 
     # Getting the mnemonic phrase for the wallet that we will be connecting to. In this case, my 

@@ -12,7 +12,7 @@ def main() -> None:
     # The address of the account that we want to get the balances for
     accound_address: str = "tdx1qspqqecwh3tgsgz92l4d4f0e4egmfe86049dj75pgq347fkkfmg84pgx9um0v"
 
-    # Defining the network that the token will be created on
+    # Defining the network that we will be connecting to.
     network: radix.network.Network = radix.network.STOKENET
 
     # Creating the provider object which is esentially our link or connection to the blockchain
