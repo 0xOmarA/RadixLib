@@ -8,7 +8,7 @@ import radixlib as radix
 import os
 
 def main() -> None:
-    # Defining the network that the token will be created on
+    # Defining the network that we will be connecting to.
     network: radix.network.Network = radix.network.STOKENET
 
     # Getting the mnemonic phrase for the wallet that we will be connecting to. In this case, my 

@@ -21,7 +21,7 @@ def main() -> None:
     token_rri: str = "mut_tr1qdal5zydpd947c3rwmk9yquhqyfxepnqu06mu2e0fvsstk7la9"
     mint_amount: int = 10 * (10**18) # This will mint 10 tokens 
 
-    # Defining the network that the token will be created on
+    # Defining the network that we will be connecting to.
     network: radix.network.Network = radix.network.STOKENET
 
     # Getting the mnemonic phrase for the wallet that we will be connecting to. In this case, my 
