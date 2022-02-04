@@ -135,8 +135,7 @@ class ActionBuilder():
                 url = url,
                 granularity = granularity,
                 token_rri = derived_token_rri,
-                is_supply_mutable = True,
-                owner = owner_address,
+                is_supply_mutable = False,
                 token_supply = token_supply,
                 to_account = to_account_address
             )
