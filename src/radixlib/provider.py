@@ -27,7 +27,7 @@ class Provider():
         self,
         network: Network,
         custom_gateway_url: Optional[str] = None,
-        open_api_version: str = "1.0.3"
+        open_api_version: str = "1.0.3",
     ) -> None:
         """ Instantiates a new provider object through the passed parameters for the given network.
         

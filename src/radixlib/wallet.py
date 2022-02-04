@@ -1,11 +1,12 @@
 from radixlib.api_types.identifiers import AccountIdentifier, StateIdentifier
+from radixlib.parsers import DefaultParser, ParserBase
 from radixlib.actions import ActionType
 from radixlib.network import Network
 from radixlib import ActionBuilder
 from radixlib import Provider
 from radixlib import Signer
 import radixlib as radix
-from typing import List, Union, Optional, Dict, Any, Tuple
+from typing import List, Union, Optional, Dict, Any, Tuple, Type
 
 class Wallet():
     """ Uses signer and provider objects to create a higher level of abstraction and provide wallet
@@ -31,6 +32,7 @@ class Wallet():
         self.network: Network = provider.network
         self.signer: Signer = signer
         self.index: int = index
+        self.__parser: Type[ParserBase] = DefaultParser
 
     @property
     def public_key(self) -> str:
@@ -146,8 +148,9 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_account_balances`` parser.
         """
         
-        return radix.parser.parse_account_balances(
-            dictionary = self.provider.get_account_balances(self.address, state_identifier)
+        return self.__parser.parse( # type: ignore
+            data = self.provider.get_account_balances(self.address, state_identifier),
+            data_type = 'get_account_balances'
         )
 
     def get_stake_positions(
@@ -165,8 +168,9 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_stake_positions`` parser.
         """
 
-        return radix.parser.parse_stake_positions(
-            dictionary = self.provider.get_stake_positions(self.address, state_identifier)
+        return self.__parser.parse( # type: ignore
+            data = self.provider.get_stake_positions(self.address, state_identifier),
+            data_type = "get_stake_positions"
         )
 
     def get_unstake_positions(
@@ -184,8 +188,9 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_unstake_positions`` parser.
         """
 
-        return radix.parser.parse_unstake_positions(
-            dictionary = self.provider.get_unstake_positions(self.address, state_identifier)
+        return self.__parser.parse( # type: ignore
+            data = self.provider.get_unstake_positions(self.address, state_identifier),
+            data_type = "get_unstake_positions"
         )
 
     def get_account_transactions(
@@ -219,7 +224,10 @@ class Wallet():
         # Return the next cursor if it's given and the parsed transactions list
         return (
             api_response.get('next_cursor'),
-            radix.parser.parse_account_transactions(dictionary = api_response)
+            self.__parser.parse( # type: ignore
+                data = api_response,
+                data_type = "get_account_transactions"
+            )
         )
 
     def get_native_token_info(
@@ -237,8 +245,9 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_token_info`` parser.
         """
 
-        return radix.parser.parse_token_info(
-            dictionary = self.provider.get_native_token_info(state_identifier)
+        return self.__parser.parse( # type: ignore
+            data = self.provider.get_native_token_info(state_identifier),
+            data_type = "get_native_token_info"
         )
 
     def get_token_info(
@@ -258,8 +267,9 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_token_info`` parser.
         """
 
-        return radix.parser.parse_token_info(
-            dictionary = self.provider.get_token_info(token_rri, state_identifier)
+        return self.__parser.parse( # type: ignore
+            data = self.provider.get_token_info(token_rri, state_identifier),
+            data_type = "get_token_info"
         )
 
     def derive_token_identifier(
@@ -275,10 +285,9 @@ class Wallet():
             str: A string of the derived token identifier.
         """
 
-        return radix.derive.token_rri(
-            creator_public_key = self.public_key,
-            token_symbol = symbol,
-            network = self.provider.network
+        return self.__parser.parse( # type: ignore
+            data = self.provider.derive_token_identifier(self.public_key, symbol),
+            data_type = "derive_token_identifier"
         )
 
     def get_validator(
@@ -298,9 +307,11 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_validator_info`` parser.
         """
 
-        return radix.parser.parse_validator_info(
-            dictionary = self.provider.get_validator(validator_address, state_identifier)
+        return self.__parser.parse( # type: ignore
+            data = self.provider.get_validator(validator_address, state_identifier),
+            data_type = "get_validator"
         )
+
 
     def get_validators(
         self,
@@ -317,10 +328,10 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_validator_info`` parser.
         """
 
-        return list(map(
-            lambda x: radix.parser.parse_validator_info({'validator': x}),
-            self.provider.get_validators()['validators']
-        ))
+        return self.__parser.parse( # type: ignore
+            data = self.provider.get_validators(),
+            data_type = "get_validators"
+        )
 
     def transaction_status(
         self,
@@ -342,6 +353,7 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_validator_info`` parser.
         """
 
-        return radix.parser.parse_transaction_status(
-            dictionary = self.provider.transaction_status(transaction_hash, state_identifier)
+        return self.__parser.parse( # type: ignore
+            data = self.provider.transaction_status(transaction_hash, state_identifier),
+            data_type = "transaction_status"
         )
