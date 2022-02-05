@@ -1,0 +1,3 @@
+[build-system]
+requires = ["wheel","requests","dateparser","pycryptodome","mnemonic","hdwallet","bech32"]
+build-backend = "setuptools.build_meta"
