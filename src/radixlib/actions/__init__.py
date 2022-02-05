@@ -9,8 +9,8 @@ from radixlib.actions.mint_tokens import MintTokens
 from radixlib.actions.burn_tokens import BurnTokens
 
 # Creating an action type
-from typing import Union as __Union, TypeAlias
-ActionType: TypeAlias = __Union[
+from typing import Union as __Union
+ActionType = __Union[
     CreateTokenDefinition,
     TransferTokens,
     UnstakeTokens,

@@ -51,3 +51,4 @@ build.sh
 typings
 tx.json
 my_notes.md
+.tox
