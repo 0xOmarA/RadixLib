@@ -14,18 +14,18 @@
 
   * [Introduction](#introduction)
   * [Installing the Package](#installing-the-package)
-    + [Method 1: Setting up the package through pip and PyPI](#method-1--setting-up-the-package-through-pip-and-pypi)
-    + [Method 2: Setting up the package from source](#method-2--setting-up-the-package-from-source)
+    + [Method 1: Setting up the package through pip and PyPI](#method-1-setting-up-the-package-through-pip-and-pypi)
+    + [Method 2: Setting up the package from source](#method-2-setting-up-the-package-from-source)
   * [Getting Started](#getting-started)
     + [Loading Your Wallet](#loading-your-wallet)
-      - [Method 1: Loading your wallet through the mnemonic phrase](#method-1--loading-your-wallet-through-the-mnemonic-phrase)
-      - [Method 2: Loading your wallet through the seed](#method-2--loading-your-wallet-through-the-seed)
-      - [Method 3: Loading your wallet through the `wallet.json`](#method-3--loading-your-wallet-through-the--walletjson-)
+      - [Method 1: Loading your wallet through the mnemonic phrase](#method-1-loading-your-wallet-through-the-mnemonic-phrase)
+      - [Method 2: Loading your wallet through the seed](#method-2-loading-your-wallet-through-the-seed)
+      - [Method 3: Loading your wallet through the `wallet.json`](#method-3-loading-your-wallet-through-the-walletjson-)
     + [Query for Account Balance](#query-for-account-balance)
     + [Query for Account Transactions](#query-for-account-transactions)
     + [Additional More Detailed Examples](#additional-more-detailed-examples)
   * [Acknowledgement](#acknowledgement)
-  * [Licence: MIT](#licence--mit)
+  * [Licence: MIT](#licence-mit)
 
 ## Introduction
 
@@ -185,7 +185,7 @@ In this case, we are using the path to the `wallet.json` file as well as the pas
 
 Now that we have discussed how a `radix.Wallet` object may be instantiated, we may now begin to dive deeper into what the `radix.Wallet` object offers and what it gives us. One of the things that the `radix.Wallet` object allows for is an easy way to query the gateway API for the balance of the currently loaded account. 
 
-To demonstrate querying for the account balance may be done, we will take the code from [Method 1: Loading your wallet through the mnemonic phrase](#method-1--loading-your-wallet-through-the-mnemonic-phrase) and extend it to allow for the added functionality. The modified code is as follows:
+To demonstrate querying for the account balance may be done, we will take the code from [Method 1: Loading your wallet through the mnemonic phrase](#method-1-loading-your-wallet-through-the-mnemonic-phrase) and extend it to allow for the added functionality. The modified code is as follows:
 ```python
 from typing import Dict
 import radixlib as radix
