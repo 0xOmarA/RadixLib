@@ -11,9 +11,9 @@ setuptools.setup(
     description="A Python API wrapper for the Gateway API of the Radix Blockchain.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/0xOmarAA/RadixLib",
+    url="https://github.com/0xOmarA/RadixLib",
     project_urls={
-        "Bug Tracker": "https://github.com/0xOmarAA/RadixLib/issues",
+        "Bug Tracker": "https://github.com/0xOmarA/RadixLib/issues",
     },
     classifiers=[
         "Programming Language :: Python :: 3",

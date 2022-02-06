@@ -48,7 +48,7 @@ class Signer():
                 private keys.
         """
 
-        self.seed: Union[bytes, bytearray] = seed if isinstance(seed, (bytes, bytearray)) else seed.encode()
+        self.seed: Union[bytes, bytearray] = seed if isinstance(seed, (bytes, bytearray)) else bytearray.fromhex(seed)
 
     @classmethod
     def new_random(cls) -> 'Signer':
