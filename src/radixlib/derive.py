@@ -106,9 +106,7 @@ def token_rri(
     pub_key_symbol_concat: bytearray = bytearray.fromhex(creator_public_key) + token_symbol.encode()
 
     final_hash: bytes = hashlib.sha256(
-        string = hashlib.sha256(
-            string = pub_key_symbol_concat
-        ).digest()
+        hashlib.sha256(pub_key_symbol_concat).digest()
     ).digest()
 
     return bech32.bech32_encode(
