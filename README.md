@@ -3,6 +3,7 @@
 ![](./images/frame1.svg)
 
 ![](https://github.com/0xOmarA/RadixLib/actions/workflows/tests.yml/badge.svg "Tests Badge")
+[![PyPI version](https://badge.fury.io/py/radixlib.svg)](https://pypi.org/project/radixlib/1.0.0/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-370/)
 [![Python 3.8](https://img.shields.io/badge/python-3.8-blue.svg)](https://www.python.org/downloads/release/python-380/)
