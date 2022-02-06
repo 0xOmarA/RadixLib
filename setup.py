@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="RadixLib",
+    name="radixlib",
     version="1.0.0",
     author="Omar Abdulla",
     author_email="OmarAbdulla7@hotmail.com",
