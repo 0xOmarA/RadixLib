@@ -260,7 +260,7 @@ Thank you to everybody who has helped make this package possible from the Radix 
 ## Licence: MIT
 
 
-Copyright (c) 2022 0xOmar
+Copyright (c) 2022 0xOmarA
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
