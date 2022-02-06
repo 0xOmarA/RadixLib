@@ -11,12 +11,16 @@ def main() -> None:
     # Defining the network that we will be connecting to.
     network: radix.network.Network = radix.network.STOKENET
 
-    # Creating a new wallet object using the signer's ability to instnatiate a new signer object by
+    # Creating a new signer object using the signer's ability to instnatiate a new signer object by
     # using a random mnemonic phrase. If you run this code multiple times you will see that the code
     # produces different wallet addresses each time it runs.
+    signer: radix.Signer = radix.Signer.new_random()
+    print('Signer seed:', signer.seed)
+
+    # Create the wallet from the signer object and print the wallet address
     wallet: radix.Wallet = radix.Wallet(
         provider = radix.Provider(network),
-        signer = radix.Signer.new_random()
+        signer = signer
     )
     print("Random wallet address:", wallet.address)
 
