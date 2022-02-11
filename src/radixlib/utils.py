@@ -138,3 +138,22 @@ def encrypt_message(
         bytearray(auth_tag) + 
         bytearray(ciphertext)
     ).hex()
+
+def decode_message(message_bytes: str) -> str:
+    """ Decodes the message bytes into a utf-8 encoded string.
+
+    Args:
+        message_bytes (str): A string of the message bytes in hex.
+    
+    Returns:
+        str: A string of the decoded message
+    """
+
+    # The first byte determines if the message is encrypted or not. If the first byte is a zer then
+    # the message is not encrypted. However, if it is is a 1 then the message is encrypted. 
+    is_encrypted: bool = message_bytes[:2] == "01"
+
+    if not is_encrypted:
+        return bytearray.fromhex(message_bytes[4:]).decode('utf-8')
+    else:
+        raise NotImplementedError("Support for the decryption of messages has not yet been implemented")
