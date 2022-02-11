@@ -150,7 +150,9 @@ def decode_message(message_bytes: str) -> str:
     """
 
     # The first byte determines if the message is encrypted or not. If the first byte is a zer then
-    # the message is not encrypted. However, if it is is a 1 then the message is encrypted. 
+    # the message is not encrypted. However, if it is is a 1 then the message is encrypted. For the
+    # time being, the library does not have support for the legacy message formats (will be added
+    # soon).
     is_encrypted: bool = message_bytes[:2] == "01"
 
     if not is_encrypted:
