@@ -55,6 +55,7 @@ class CreateTokenDefinition(Serializable):
                     is_supply_mutable is False
                 #. When the symbol given is not all lower case.
                 #. When the symbol's length is not between 3 and 8.
+                #. When the protocol being used for the URLs is not specified
         """
 
         # Checking for incorrect usage of the to_account and token_supply arguments
@@ -76,6 +77,11 @@ class CreateTokenDefinition(Serializable):
             raise ValueError("Token symbols must be all lower case letters.")
         if not (2 <= len(symbol) <= 8):
             raise ValueError(f"Token symbols must be 2 to 8 characters long.")
+
+        # Check that the URLs contain the protocol used.
+        for url_item in [url, icon_url]:
+            if url_item and "://" not in url_item:
+                raise ValueError("When a URL is specified you need to provide the protocol being used.")
 
         self.owner: Optional[AccountIdentifier] = AccountIdentifier(owner) if owner is not None else None
         self.name: str = name
