@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any, Union, List, Tuple, Set, BinaryIO, overload
+from typing import Optional, Dict, Any, TypeVar, Union, List, Tuple, Set, BinaryIO, overload
 from radixlib.serializable import Serializable
 
 from ecdsa.keys import SigningKey, VerifyingKey
@@ -31,15 +31,16 @@ def remove_none_values_recursively(dictionary: Dict[Any, Any]) -> Dict[Any, Any]
         if value is not None
     }
 
+__T = TypeVar('__T', Dict[Any, Any], List[Any], Tuple[Any], Set[Any])
 def convert_to_dict_recursively(
-    iterable: Union[Dict[Any, Any], List[Any], Tuple[Any], Set[Any]]
-) -> Union[Dict[Any, Any], List[Any], Tuple[Any], Set[Any]]:
+    iterable: __T
+) -> __T:
     """ Converts the individual items in an iterable to a dictionary if they're an instance of the
     Serializable class.
 
     This function recursively checks for Serializable objects in the iterable passed to it and 
     invokes the `to_dict` method on all of the objects that if finds which are Serializable. This 
-    function is excuted on the objects which have been converted to a dictionary to ensure that 
+    function is executed on the objects which have been converted to a dictionary to ensure that 
     the entire dictionary is in a valid format.
 
     Args:
@@ -88,16 +89,19 @@ def encrypt_message(
     receiver_public_key: str,
     message: str,
 ) -> str:
-    """
+    """ Encrypts a message using the new format used by the Radix Olympia wallet.
+    
     This method is used to encrypt a message such that only the receiver of the message
     would be able to open the message and view its content. This is a standard practice 
     and functionality in the Radix desktop wallet.
-    # Arguments
-    * `sender_private_key: str` - The private key of the sender where the message originated
-    * `receiver_public_key: str` - The public key of the receiver to who the message is sent
-    * `message: str` - The message we wish the encrypt
-    # Returns
-    * `str` - A string of the encrypted message
+    
+    Args:
+        sender_private_key (str): The private key of the sender where the message originated
+        receiver_public_key (str): The public key of the receiver to who the message is sent
+        message (str): The message we wish the encrypt
+    
+    Returns
+        str: A string of the encrypted message
     """
     # Creating an Ephemeral key
     ephemeral_private_key: SigningKey = ecdsa.SigningKey.generate(curve=ecdsa.SECP256k1, hashfunc=hashlib.sha256) # type: ignore
