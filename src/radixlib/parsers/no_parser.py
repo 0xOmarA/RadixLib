@@ -103,7 +103,7 @@ class NoParser(ParserBase):
         """ A function used for the parsing of the get_validators API calls. """
         raise NotImplementedError("No implementation for get_validators")
 
-    @abstractclassmethod
+    @classmethod
     def parse_get_validator_stakes(cls, data: Any) -> Any:
         """ A function used for the parsing of the get_validator_stakes API calls. """
         raise NotImplementedError("No implementation for get_validator_stakes")
