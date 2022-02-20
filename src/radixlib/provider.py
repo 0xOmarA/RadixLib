@@ -414,6 +414,37 @@ class Provider():
             }
         )
 
+    def get_validator_stakes(
+        self,
+        validator_address: str,
+        state_identifier: Optional[StateIdentifier] = None,
+        cursor: Optional[str] = None,
+        limit: int = 30,
+    ) -> Dict[str, Any]:
+        """ Returns paginated results about the delegated stakes from accounts to a validator. The 
+        results are totalled by account, and ordered by account age (oldest to newest).
+        
+        Args:
+            validator_address (str): A string of the validator address
+            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
+                to None. Allows a client to request a response referencing an earlier ledger state.
+            cursor (:obj:`str`, optional): A timestamp of when to begin getting transactions.
+            limit (int): The page size requested. The maximum value is 30 at present.
+
+        Returns:
+            dict: A dictionary of the validator stakes
+        """
+
+        return self.__dispatch(
+            endpoint = "validator/stakes",
+            params = {
+                "at_state_identifier": state_identifier,
+                "validator_identifier": ValidatorIdentifier(validator_address),
+                "cursor": cursor,
+                "limit": limit
+            }
+        )
+
     # ###########################################
     # ---------- Transaction Endpoints ----------
     # ###########################################
