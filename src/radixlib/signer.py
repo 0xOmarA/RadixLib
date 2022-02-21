@@ -61,8 +61,7 @@ class Signer():
         cls,
         mnemonic_phrase: Union[str, List[str], Tuple[str]]
     ) -> 'Signer':
-        """ 
-        Instantiates a new Signer object from the mnemonic phrase passed.
+        """ Instantiates a new Signer object from the mnemonic phrase passed.
         
         Args:
             mnemonic_phrase (Union[str, :obj:`list` of :obj:`str`, :obj:`tuple` of :obj:`str`): 
@@ -90,9 +89,8 @@ class Signer():
         wallet_json_path: str,
         passphrase: str
     ) -> 'Signer':
-        """ 
-        Instantiates a new Signer object from the `wallet.json` file created by the Radix desktop
-        wallet.
+        """ Instantiates a new Signer object from the `wallet.json` file created by the Radix 
+        desktop wallet.
 
         Args:
             wallet_json_path (str): The path to the `wallet.json` file.
@@ -204,6 +202,26 @@ class Signer():
         """
 
         return str(self.hdwallet(index).private_key())
+
+    @property
+    def master_private_key(self) -> str:
+        """ Gets the master private key for the given signer
+        
+        Returns:
+            str: A string of the master private key.
+        """
+
+        return str(self.hdwallet(0).root_xprivate_key())
+
+    @property
+    def master_public_key(self) -> str:
+        """ Gets the master public key for the given signer
+        
+        Returns:
+            str: A string of the master public key.
+        """
+
+        return str(self.hdwallet(0).root_xpublic_key())
 
     def sign(
         self, 
