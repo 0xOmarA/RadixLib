@@ -1,6 +1,8 @@
 from radixlib.network import Network
+from ecdsa.curves import SECP256k1
 import hashlib
 import bech32
+import ecdsa
 
 
 def wallet_address_from_public_key(
@@ -207,3 +209,19 @@ def atto_from_xrd(xrd_amount: float) -> int:
     """
 
     return int(xrd_amount * 10**18)
+
+def public_key_from_private_key(private_key: str) -> str:
+    """ Derives the public key for a given private key
+    
+    Args:
+        private_key (str): A string of the private key to get the equivalent public key for.
+
+    Returns:
+        str: A string of the public key.
+    """
+
+    return ecdsa.SigningKey.from_string(
+        bytearray.fromhex(private_key), 
+        curve=SECP256k1, 
+        hashfunc=hashlib.sha256
+    ).get_verifying_key().to_string("compressed").hex()

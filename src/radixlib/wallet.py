@@ -363,7 +363,7 @@ class Wallet():
             limit = limit
         )
 
-        # Return the next cursor if it's given and the parsed validator stakrs list
+        # Return the next cursor if it's given and the parsed validator stakes list
         return (
             api_response.get('next_cursor'),
             self.__parser.parse( # type: ignore
