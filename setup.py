@@ -23,7 +23,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Natural Language :: English",
-        "Development Status :: 4 - Beta",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: MIT License",
     ],

@@ -170,3 +170,13 @@ class TestDerive(unittest.TestCase):
         )
 
         self.assertEqual(radix.derive.xrd_rri_on_network(network), 'xrd_dr1qyrs8qwl')
+
+    def test_derive_public_key_from_private_key(self):
+        """ Tests the derivation of the public key from the private key """
+
+        # This is the keypair that we will be using for the derivation and verification of the 
+        # output
+        private_key: str = "0000000000000000000000000000000000000000000000000000000000000003"
+        public_key: str = "02f9308a019258c31049344f85f89d5229b531c845836f99b08601f113bce036f9"
+
+        self.assertEqual(public_key, radix.derive.public_key_from_private_key(private_key))
