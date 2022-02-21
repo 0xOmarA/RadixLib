@@ -12,6 +12,7 @@ class StateIdentifier(Serializable):
 
     def __init__(
         self,
+        *,
         version: Optional[int] = None,
         timestamp: Optional[datetime] = None,
         epoch: Optional[int] = None,
