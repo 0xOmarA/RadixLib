@@ -333,6 +333,45 @@ class Wallet():
             data_type = "get_validators"
         )
 
+    def get_validator_stakes(
+        self,
+        state_identifier: Optional[StateIdentifier] = None,
+        cursor: Optional[str] = None,
+        limit: int = 30,
+    ) -> Tuple[Optional[str], List[Dict[str, Any]]]:
+        """ Returns paginated results about the delegated stakes from accounts to a validator. The 
+        results are totalled by account, and ordered by account age (oldest to newest).
+        
+        Args:
+            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
+                to None. Allows a client to request a response referencing an earlier ledger state.
+            cursor (:obj:`str`, optional): A timestamp of when to begin getting transactions.
+            limit (int): The page size requested. The maximum value is 30 at present.
+
+        Returns:
+            dict: A dictionary of the validator stakes
+        """
+
+        # The response of the API to the get transaction query
+        api_response: Dict[str, Any] = self.provider.get_validator_stakes(
+            validator_address = radix.derive.validator_address_from_public_key(
+                public_key = self.public_key,
+                network = self.network
+            ),
+            state_identifier = state_identifier,
+            cursor = cursor,
+            limit = limit
+        )
+
+        # Return the next cursor if it's given and the parsed validator stakes list
+        return (
+            api_response.get('next_cursor'),
+            self.__parser.parse( # type: ignore
+                data = api_response,
+                data_type = "get_validator_stakes"
+            )
+        )
+
     def transaction_status(
         self,
         transaction_hash: str,

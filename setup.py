@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="radixlib",
-    version="1.0.1",
+    version="1.1.0",
     author="Omar Abdulla",
     author_email="OmarAbdulla7@hotmail.com",
     description="A Python API wrapper for the Gateway API of the Radix Blockchain.",
@@ -23,7 +23,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Natural Language :: English",
-        "Development Status :: 4 - Beta",
         "Operating System :: OS Independent",
         "License :: OSI Approved :: MIT License",
     ],

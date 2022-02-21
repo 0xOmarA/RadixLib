@@ -67,6 +67,10 @@ class ParserBase(ABC):
         """ A function used for the parsing of the get_validators API calls. """
     
     @abstractclassmethod
+    def parse_get_validator_stakes(cls, data: Any) -> Any:
+        """ A function used for the parsing of the get_validator_stakes API calls. """
+
+    @abstractclassmethod
     def parse_get_transaction_rules(cls, data: Any) -> Any:
         """ A function used for the parsing of the get_transaction_rules API calls. """
     

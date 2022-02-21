@@ -1,3 +1,4 @@
+# type: ignore
 from typing import Callable, Optional, Dict, Any, List
 from radixlib.parsers.base_parser import ParserBase
 import radixlib as radix
@@ -453,6 +454,58 @@ class DefaultParser(ParserBase):
             lambda x: cls.parse({'validator': x}, 'get_validator'),
             data['validators']
         ))
+
+    @classmethod
+    def parse_get_validator_stakes(cls, data: Any) -> Any:
+        """ A function used for the parsing of the get_validator_stakes API calls. 
+        
+        This parser function produces output in the following format::
+
+            [
+                {
+                    "validator_address": "address",
+                    "account_address": "address",
+                    "total_pending_stake": {
+                        "xrd_rri": "amount"
+                    },
+                    "total_stake": {
+                        "xrd_rri": "amount"
+                    },
+                    "total_pending_unstake": {
+                        "xrd_rri": "amount"
+                    },
+                    "total_unstaking": {
+                        "xrd_rri": "amount"
+                    },
+                }
+            ]
+
+        Args:
+            data (dict): A dictionary of the data to parse.
+
+        Returns:
+            dict: A dictionary of the parsed data.
+        """
+
+        return [{
+                "validator_address": info['validator']['address'],
+                "account_address": info['account']['address'],
+                "total_pending_stake": {
+                    info['total_pending_stake']['token_identifier']['rri']: int(info['total_pending_stake']['value'])
+                },
+                "total_stake": {
+                    info['total_stake']['token_identifier']['rri']: int(info['total_stake']['value'])
+                },
+                "total_pending_unstake": {
+                    info['total_pending_unstake']['token_identifier']['rri']: int(info['total_pending_unstake']['value'])
+                },
+                "total_unstaking": {
+                    info['total_unstaking']['token_identifier']['rri']: int(info['total_unstaking']['value'])
+                },
+            } 
+            for info 
+            in data['account_stake_delegations']
+        ]
     
     @classmethod
     def parse_get_transaction_rules(cls, data: Any) -> Any:
