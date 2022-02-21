@@ -1,6 +1,6 @@
 from radixlib.serializable import Serializable
 import radixlib.utils as utils
-from typing import Dict, Optional, Set, Any
+from typing import Dict, Optional, Set, Any, overload
 from datetime import datetime
 import dateparser
 import json
@@ -9,6 +9,18 @@ import pytz
 
 class StateIdentifier(Serializable):
     """ The implementation of an StateIdentifier """
+
+    @overload
+    def __init__(self, *,  version: int) -> None: ...
+
+    @overload
+    def __init__(self, *, timestamp: datetime) -> None: ...
+
+    @overload
+    def __init__(self, *, epoch: int) -> None: ...
+    
+    @overload
+    def __init__(self, *, epoch: int, round: int) -> None: ...
 
     def __init__(
         self,
