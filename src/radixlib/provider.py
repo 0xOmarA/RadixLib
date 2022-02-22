@@ -27,7 +27,7 @@ class Provider():
         self,
         network: Network,
         custom_gateway_url: Optional[str] = None,
-        open_api_version: str = "1.0.3",
+        open_api_version: str = "1.1.2",
     ) -> None:
         """ Instantiates a new provider object through the passed parameters for the given network.
         
@@ -40,7 +40,7 @@ class Provider():
             network (Network): The type of network that the provider will connect to.
             custom_gateway_url (:obj:`str`, optional): An optional argument that defaults to None. 
                 This is the url of the RPC to connect to if we wish to connect to a custom gateway.
-            open_api_version (str): An optional argument that defaults to "1.0.2" and it defines the
+            open_api_version (str): An optional argument that defaults to "1.1.2" and it defines the
                 value for the X-Radixdlt-Target-Gw-Api header which is requested by the gateway API.
 
         Raises:
