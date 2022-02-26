@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Any, TypeVar, Union, List, Tuple, Set, BinaryIO, overload
+from typing import Optional, Dict, Any, TypeVar, List, Tuple, Set, BinaryIO, overload
 from radixlib.serializable import Serializable
 
 from ecdsa.keys import SigningKey, VerifyingKey

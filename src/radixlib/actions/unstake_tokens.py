@@ -68,13 +68,14 @@ class UnstakeTokens(Serializable):
         """" Converts the object to a dictionary """
         return radix.utils.remove_none_values_recursively(
             radix.utils.convert_to_dict_recursively({
+                "type": "UnstakeTokens",
                 "to_account": self.to_account,
                 "from_validator": self.from_validator,
                 "amount": TokenAmount(
                     rri = self.token_rri,
                     amount = self.amount
-                ) if self.amount is not None else None,
-                "unstake_percentage": self.unstake_percentage
+                ) if getattr(self, 'amount', None) is not None else None,
+                "unstake_percentage":  getattr(self, "unstake_percentage", None)
             })
         )
 
