@@ -1,15 +1,35 @@
 from radixlib.api_types.identifiers import AccountIdentifier, ValidatorIdentifier
 from radixlib.serializable import Serializable
 from radixlib.api_types import TokenAmount
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, overload
 import radixlib as radix
 import json
 
 class UnstakeTokens(Serializable):
     """ Defines an UnstakeTokens action  """
 
+    @overload
     def __init__(
         self,
+        *,
+        to_account: str, 
+        from_validator: str, 
+        unstake_percentage: float
+    ) -> None : ...
+
+    @overload
+    def __init__(
+        self,
+        *,
+        to_account: str,
+        from_validator: str,
+        amount: int,
+        token_rri: str
+    ) -> None: ...
+
+    def __init__(
+        self,
+        *,
         to_account: str,
         from_validator: str,
         unstake_percentage: Optional[float] = None,
