@@ -9,6 +9,7 @@ from ecdsa.curves import SECP256k1
 from Crypto.Cipher import AES
 import hashlib
 import ecdsa
+import jwt
 import os
 import io
 
@@ -64,7 +65,7 @@ def convert_to_dict_recursively(
             else:
                 new_dict[key] = value
 
-        return new_dict
+        return new_dict # type: ignore
     
     elif isinstance(iterable, (list, tuple, set)): # type: ignore
         new_list: List[Any] = []
@@ -232,3 +233,76 @@ def decode_message(
     
     else:
         raise NotImplementedError("No decoding programmed for the provided message type")
+
+def decode_jwt(
+    jwt_string: str
+) -> Dict[Any, Any]:
+    """ Decodes the given JWT string without performing any verification. 
+
+    Args:
+        jwt_string (str): A string of the JWT to decode.
+
+    Returns:
+        dict: A dictionary of the body of the JWT.
+    """
+    return jwt.decode( # type: ignore
+        jwt_string,
+        algorithms = ['ES256K'],
+        options={"verify_signature": False}
+    )
+
+def verify_jwt(
+    jwt_string: str,
+    public_key: Optional[str] = None,
+) -> bool:
+    """ Verifies a given JWT token's origin.
+
+    This method is used to verify that a given JWT token string was created by the owner of the 
+    private key associated with the provided public key. This method expects that the public key 
+    will be provided in one of two ways:
+
+    #. Either directly as an argument in the `public_key` argument.
+    #. As a key in the JWT token that has the name `public_key`. 
+
+    In case that a public key is provided as an argument and another public key is also present in 
+    the JWT, then the public key given as an argument takes precedence over the one provided in the 
+    JWT body.
+
+    Args:
+        jwt_string (str): The JWT string to verify.
+        public_key (Optional[str]): An optional string of the public key of the suspected creator
+            of the JWT.
+
+    Returns:
+        bool: a boolean of True if the public key provided did indeed create the JWT and False if 
+            they did not. 
+    """
+    
+    # Checking if a public key was given, if no public key was given then we try to look in the JWT
+    # string to get the public key from the encoded data.
+    if public_key is None:
+        try:
+            decoded_jwt: Dict[Any, Any] = decode_jwt(jwt_string)
+        except:
+            raise TypeError("The JWT String provided does not seem to be a valid JWT string.")
+
+        # Attempt to get the public key and rasing an exception if it's not provided here.
+        public_key = decoded_jwt.get('public_key')
+        if public_key is None:
+            raise ValueError("No public key was provided as an argument or in the JWT message.")
+    
+    # The public key needs to be in the PEM format. So, we load it into a VerifyingKey object and
+    # then convert it to PEM
+    public_key_pem: bytes = VerifyingKey.from_string( # type: ignore
+        string = bytearray.fromhex(public_key),
+        curve=SECP256k1,
+        hashfunc=hashlib.sha256
+    ).to_pem() # type: ignore
+
+    # Decode the jwt_string again with the provided public key. If it errors out then the key is not
+    # a valid key.
+    try:
+        jwt.decode(jwt_string, public_key_pem, algorithms = ['ES256K']) #type: ignore
+        return True
+    except:
+        return False

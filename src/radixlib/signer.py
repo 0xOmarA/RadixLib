@@ -10,6 +10,7 @@ import mnemonic
 import hashlib
 import ecdsa
 import json
+import jwt
 
 
 class Signer():
@@ -276,4 +277,46 @@ class Signer():
         return radix.derive.wallet_address_from_public_key(
             public_key = self.public_key(index),
             network = network
+        )
+
+    def create_jwt(
+        self,
+        payload: Dict[Any, Any],
+        index: int = 0,
+        add_public_key: bool = True
+    ) -> str:
+        """ Creates a JSON Web Token (JWT) signed by this signer.
+
+        This method is used to generate JWTs that utilize the ES256K (secp256k1) algorithm which are
+        signed by the private key of the account and can be verified by the account's public key. 
+        The account's public key will always be provided in the payload in order to provide an easy
+        way to verify the origin of the JWT.
+
+        Args:
+            payload (dict): A dictionary of the payload to include in the message.
+            index (int): The index of the account to use. Defaults to zero. 
+            add_public_key (bool): When this boolean is true, the public key is added to the JWT as
+                a key in the body of the token. 
+
+        Returns:
+            str: A string of the created JSON Web Token (JWT)
+        """
+
+        # The methods that we will be using require that the private key is used in the PEM format.
+        # so, we load the private key string into an ecdsa.SigningKey first to convert it to PEM.
+        private_key_pem: bytes = ecdsa.SigningKey.from_string( #type: ignore
+            string=bytearray.fromhex(self.private_key(index)),
+            curve=SECP256k1,
+            hashfunc=hashlib.sha256
+        ).to_pem()
+
+        # Ensuring that the public key string is in the payload
+        if add_public_key:
+            payload['public_key'] = self.public_key(index)
+
+        # Creating and returning the JWT
+        return jwt.encode( # type: ignore
+            payload = payload,
+            key = private_key_pem, # type: ignore
+            algorithm = "ES256K"
         )

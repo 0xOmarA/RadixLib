@@ -36,6 +36,7 @@ setuptools.setup(
         "mnemonic",
         "hdwallet",
         "bech32",
+        "pyjwt[crypto]",
     ],
     extras_require={
         "dev": [

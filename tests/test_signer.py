@@ -89,3 +89,36 @@ class TestSigner(unittest.TestCase):
         expected_address: str = "rdx1qspz8wslrhhch7lfw0mukwv386608purn3v4sa62k7wq6m4nv2xejrcmqcvl2"
 
         self.assertEqual(signer.wallet_address(radix.network.MAINNET), expected_address)
+
+    def test_jwt_creation_correct_key(self):
+        """ Tests the ability of the signer to derive the wallet address """
+
+        # Loading up the signer object to use for the operation
+        signer: radix.Signer = radix.Signer.from_mnemonic(self.MNEMONIC_PHRASE)
+
+        # The payload which we wish to create a JWT for
+        jwt: str = signer.create_jwt({"order": "buy 1 scorpion"})
+
+        self.assertEqual(radix.utils.verify_jwt(jwt), True)
+
+    def test_jwt_creation_correct_key1(self):
+        """ Tests the ability of the signer to derive the wallet address """
+
+        # Loading up the signer object to use for the operation
+        signer: radix.Signer = radix.Signer.from_mnemonic(self.MNEMONIC_PHRASE)
+
+        # The payload which we wish to create a JWT for
+        jwt: str = signer.create_jwt({"order": "buy 1 scorpion"})
+
+        self.assertEqual(radix.utils.verify_jwt(jwt, signer.public_key(0)), True)
+
+    def test_jwt_creation_incorrect_key(self):
+        """ Tests the ability of the signer to derive the wallet address """
+
+        # Loading up the signer object to use for the operation
+        signer: radix.Signer = radix.Signer.from_mnemonic(self.MNEMONIC_PHRASE)
+
+        # The payload which we wish to create a JWT for
+        jwt: str = signer.create_jwt({"order": "buy 1 scorpion"})
+
+        self.assertEqual(radix.utils.verify_jwt(jwt, signer.public_key(21)), False)

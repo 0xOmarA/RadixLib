@@ -10,7 +10,7 @@ from typing import List, Union, Optional, Dict, Any, Tuple, Type
 
 class Wallet():
     """ Uses signer and provider objects to create a higher level of abstraction and provide wallet
-    functionaltiy.
+    functionality.
     """
 
     def __init__(
