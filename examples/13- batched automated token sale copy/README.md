@@ -59,7 +59,7 @@ We are now finally ready to run the automated sale of the tokens. One important 
 So, let's create a cronjob for this script to make it run once every 2 minutes. To create that cronjob, run the following commands:
 ```shell
 crontab -l >> mycron
-echo "*/2 * * * * \"$(which python3)\" \"$(pwd)/token sale.py\" >> \"$(pwd)/log.log\"" >> mycron
+echo "*/10 * * * * * \"$(which python3)\" \"$(pwd)/token sale.py\" >> \"$(pwd)/log.log\"" >> mycron
 crontab mycron
 rm mycron
 ```
