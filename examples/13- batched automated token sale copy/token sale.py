@@ -128,10 +128,7 @@ def main() -> None:
     for tx in transactions[::-1]:
         handeled_transactions_mapping[tx['hash']] = tx_hash
 
-    # Saving the state to the data file. We are saving the state with each transaction and not
-    # just once at the end. This is done to ensure that even if an exception does happen in the
-    # middle of the operation of the code, the transactions which have truly already been 
-    # handeled are put into the data file.
+    # Saving the state to the data file. 
     with open(config.data_json_file, 'w') as file:
         data: Dict[str, Any] = {
             "handeled_transactions_mapping": handeled_transactions_mapping
