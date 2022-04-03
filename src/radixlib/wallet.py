@@ -127,6 +127,7 @@ class Wallet():
             submit = True,
         )
 
+        print(tx_submission_info)
         return tx_submission_info['transaction_identifier']['hash']
 
     # ###########################################
