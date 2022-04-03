@@ -25,6 +25,8 @@ jobs:
         python -m pip install --upgrade setuptools
         python -m pip install --upgrade setuptools_scm
         python -m pip install --upgrade conan
+        python -m pip install --upgrade cryptography
+        python -m pip install --upgrade pycryptodome
         pip install tox tox-gh-actions
     - name: Test with tox
       run: tox

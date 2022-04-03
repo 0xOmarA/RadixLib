@@ -46,11 +46,11 @@ def main() -> None:
 
     # Checking if some other public key was the sender of the message
     is_real_sender: bool = radix.utils.verify_jwt(jwt, signer.public_key(1))
-    print(f"Did {public_key} send the message?", 'Yes.' if is_real_sender else 'No.')
+    print(f"Did {signer.public_key(1)} send the message?", 'Yes.' if is_real_sender else 'No.')
     
     # Checking if some other public key was the sender of the message
     is_real_sender: bool = radix.utils.verify_jwt(jwt, signer.public_key(2))
-    print(f"Did {public_key} send the message?", 'Yes.' if is_real_sender else 'No.')
+    print(f"Did {signer.public_key(2)} send the message?", 'Yes.' if is_real_sender else 'No.')
 
 if __name__ == "__main__":
     main()
