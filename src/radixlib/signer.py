@@ -85,30 +85,25 @@ class Signer():
         return cls(mnemonic.Mnemonic.to_seed(mnemonic_string))
 
     @classmethod
-    def from_wallet_json(
+    def from_encrypted_seed(
         cls,
-        wallet_json_path: str,
+        encrypted_seed_dict: Dict[str, Any],
         passphrase: str
     ) -> 'Signer':
-        """ Instantiates a new Signer object from the `wallet.json` file created by the Radix 
-        desktop wallet.
+        """ Instantiates a new Signer object from the encrypted seed phrase typically found in the
+        Olympia wallet `wallet.json` file.
 
         Args:
-            wallet_json_path (str): The path to the `wallet.json` file.
+            encrypted_seed_dict (Dict[str, Any]): The encrypted seed.
             passphrase (str): The passphrase used by the Radix wallet to encrypt the content of the
                 `wallet.json` file.
 
         Returns:
-            Signer: A new signer initalized through the `wallet.json` file.
+            Signer: A new signer initalized through the encrypted seed.
         """
 
-        # Opening and reading the wallet.json file
-        with open(wallet_json_path, 'r') as file:
-            wallet_json: Dict[Any, Any] = json.load(file)
-            wallet_json['seed'] = json.loads(wallet_json['seed'])
-
         # Getting the important information from the file
-        wallet_seed: Dict[Any, Any] = wallet_json['seed']['crypto']
+        wallet_seed: Dict[Any, Any] = encrypted_seed_dict['crypto']
 
         salt: str = wallet_seed['kdfparams']['salt']
         length_of_derived_key: int = wallet_seed['kdfparams']['lengthOfDerivedKey']
@@ -147,6 +142,31 @@ class Signer():
         seed: bytes = mnemonic.Mnemonic('english').to_seed(mnemonic_phrase)
 
         return cls(seed)
+
+    @classmethod
+    def from_wallet_json(
+        cls,
+        wallet_json_path: str,
+        passphrase: str
+    ) -> 'Signer':
+        """ Instantiates a new Signer object from the `wallet.json` file created by the Radix 
+        desktop wallet.
+
+        Args:
+            wallet_json_path (str): The path to the `wallet.json` file.
+            passphrase (str): The passphrase used by the Radix wallet to encrypt the content of the
+                `wallet.json` file.
+
+        Returns:
+            Signer: A new signer initalized through the `wallet.json` file.
+        """
+
+        # Opening and reading the wallet.json file
+        with open(wallet_json_path, 'r') as file:
+            wallet_json: Dict[Any, Any] = json.load(file)
+            wallet_json['seed'] = json.loads(wallet_json['seed'])
+
+        return cls.from_encrypted_seed(wallet_json['seed'], passphrase)
 
     def hdwallet(
         self, 
