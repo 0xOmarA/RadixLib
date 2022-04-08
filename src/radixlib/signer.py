@@ -167,7 +167,7 @@ class Signer():
             wallet_json: Dict[Any, Any] = json.load(file)
             wallet_json['seed'] = json.loads(wallet_json['seed'])
 
-        return cls.from_encrypted_seed(wallet_json['seed'], passphrase)
+        return cls.from_encrypted_entropy(wallet_json['seed'], passphrase)
 
     def hdwallet(
         self, 
