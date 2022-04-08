@@ -1,4 +1,5 @@
 from typing import List, Tuple, Dict, Union, Any
+from Crypto.Cipher._mode_gcm import GcmMode
 from Crypto.Protocol.KDF import scrypt
 from hdwallet.hdwallet import HDWallet
 from ecdsa.util import sigencode_der
@@ -85,39 +86,39 @@ class Signer():
         return cls(mnemonic.Mnemonic.to_seed(mnemonic_string))
 
     @classmethod
-    def from_encrypted_seed(
+    def from_encrypted_entropy(
         cls,
-        encrypted_seed_dict: Dict[str, Any],
+        encrypted_entropy_dict: Dict[str, Any],
         passphrase: str
     ) -> 'Signer':
-        """ Instantiates a new Signer object from the encrypted seed phrase typically found in the
+        """ Instantiates a new Signer object from the encrypted entropy phrase typically found in the
         Olympia wallet `wallet.json` file.
 
         Args:
-            encrypted_seed_dict (Dict[str, Any]): The encrypted seed.
+            encrypted_entropy_dict (Dict[str, Any]): The encrypted entropy.
             passphrase (str): The passphrase used by the Radix wallet to encrypt the content of the
                 `wallet.json` file.
 
         Returns:
-            Signer: A new signer initalized through the encrypted seed.
+            Signer: A new signer initalized through the encrypted entropy.
         """
 
         # Getting the important information from the file
-        wallet_seed: Dict[Any, Any] = encrypted_seed_dict['crypto']
+        wallet_entropy: Dict[Any, Any] = encrypted_entropy_dict['crypto']
 
-        salt: str = wallet_seed['kdfparams']['salt']
-        length_of_derived_key: int = wallet_seed['kdfparams']['lengthOfDerivedKey']
-        cost_param_n: int = wallet_seed['kdfparams']['costParameterN']
-        block_size: int = wallet_seed['kdfparams']['blockSize']
-        parallelization_parameter: int = wallet_seed['kdfparams']['parallelizationParameter']
+        salt: str = wallet_entropy['kdfparams']['salt']
+        length_of_derived_key: int = wallet_entropy['kdfparams']['lengthOfDerivedKey']
+        cost_param_n: int = wallet_entropy['kdfparams']['costParameterN']
+        block_size: int = wallet_entropy['kdfparams']['blockSize']
+        parallelization_parameter: int = wallet_entropy['kdfparams']['parallelizationParameter']
 
-        cipher_type: str = wallet_seed['cipher']
-        cipher_text: str = wallet_seed['ciphertext']
-        nonce: str = wallet_seed['cipherparams']['nonce']
-        mac: str = wallet_seed['mac']
+        cipher_type: str = wallet_entropy['cipher']
+        cipher_text: str = wallet_entropy['ciphertext']
+        nonce: str = wallet_entropy['cipherparams']['nonce']
+        mac: str = wallet_entropy['mac']
 
-        # Calculating the symetrical key through the salt
-        symetrical_key: bytes = scrypt( # type: ignore
+        # Calculating the symmetrical key through the salt
+        symmetrical_key: bytes = scrypt( # type: ignore
             password = passphrase,
             salt = bytearray.fromhex(salt), # type: ignore
             key_len = length_of_derived_key,
@@ -126,9 +127,9 @@ class Signer():
             p = parallelization_parameter
         )
 
-        # Decrypting the cipher phrase into its entropy using the symetrical key
+        # Decrypting the cipher phrase into its entropy using the symmetrical key
         entropy: bytes = AES.new(       #type: ignore
-            key = symetrical_key,       #type: ignore
+            key = symmetrical_key,       #type: ignore
             mode = getattr(AES, f"MODE_{cipher_type.split('-')[-1]}"),
             nonce = bytearray.fromhex(nonce)
         ).decrypt_and_verify(           #type: ignore
@@ -172,8 +173,8 @@ class Signer():
         self, 
         index: int = 0
     ) -> HDWallet:
-        """ 
-        Creates an HDWallet object suitable for the Radix blockchain with the passed account index.
+        """ Creates an HDWallet object suitable for the Radix blockchain with the passed account 
+        index.
         
         Args:
             index (int): The account index to create the HDWallet object for.
