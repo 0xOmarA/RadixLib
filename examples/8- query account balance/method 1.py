@@ -10,7 +10,7 @@ import radixlib as radix
 
 def main() -> None:
     # The address of the account that we want to get the balances for
-    accound_address: str = "tdx1qspqqecwh3tgsgz92l4d4f0e4egmfe86049dj75pgq347fkkfmg84pgx9um0v"
+    account_address: str = "tdx1qspqqecwh3tgsgz92l4d4f0e4egmfe86049dj75pgq347fkkfmg84pgx9um0v"
 
     # Defining the network that we will be connecting to.
     network: radix.network.Network = radix.network.STOKENET
@@ -20,7 +20,7 @@ def main() -> None:
     provider: radix.Provider = radix.Provider(network)
 
     # Getting the token information and printing it to the console
-    account_balances: Dict[str, Any] = provider.get_account_balances(accound_address)
+    account_balances: Dict[str, Any] = provider.get_account_balances(account_address)
     print("Raw balances info:", account_balances, '\n\n')
 
     # ###############################################

@@ -29,7 +29,7 @@ def main() -> None:
     # Loading up the data file which contains the state of the program from the last run
     with open(config.data_json_file, 'r') as file:
         data_file_content: Dict[str, Any] = json.load(file)
-        handeled_transactions_mapping: Dict[str, str] = data_file_content['handeled_transactions_mapping']
+        handled_transactions_mapping: Dict[str, str] = data_file_content['handled_transactions_mapping']
 
     # Loading up our wallet through the information that we provided in the config file
     wallet: radix.Wallet = radix.Wallet(
@@ -60,7 +60,7 @@ def main() -> None:
     for tx in transactions[::-1]:
 
         # Ignore the transaction if we have handeled it already
-        if tx['hash'] in handeled_transactions_mapping.keys():
+        if tx['hash'] in handled_transactions_mapping.keys():
             continue
 
         # Getting all of the "TransferTokens" actions where tokens where sent from another address
@@ -126,12 +126,12 @@ def main() -> None:
     print(f"Transaction sent with hash: {tx_hash}.")
 
     for tx in transactions[::-1]:
-        handeled_transactions_mapping[tx['hash']] = tx_hash
+        handled_transactions_mapping[tx['hash']] = tx_hash
 
     # Saving the state to the data file. 
     with open(config.data_json_file, 'w') as file:
         data: Dict[str, Any] = {
-            "handeled_transactions_mapping": handeled_transactions_mapping
+            "handled_transactions_mapping": handled_transactions_mapping
         }
         json.dump(data, file)
 

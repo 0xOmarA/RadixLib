@@ -10,7 +10,7 @@ import radixlib as radix
 
 def main() -> None:
     # The address of the account that we want to get the transaction history for.
-    accound_address: str = "tdx1qspqqecwh3tgsgz92l4d4f0e4egmfe86049dj75pgq347fkkfmg84pgx9um0v"
+    account_address: str = "tdx1qspqqecwh3tgsgz92l4d4f0e4egmfe86049dj75pgq347fkkfmg84pgx9um0v"
 
     # Defining the network that we will be connecting to.
     network: radix.network.Network = radix.network.STOKENET
@@ -25,7 +25,7 @@ def main() -> None:
     while True:
         # Getting the transaction history for the current cursor
         query_response: Dict[str, Any] = provider.get_account_transactions(
-            account_address = accound_address,
+            account_address = account_address,
             cursor = cursor
         )
 
