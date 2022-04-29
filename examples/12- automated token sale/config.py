@@ -11,9 +11,9 @@ of which transactions has the script handeled so far so that they may be ignored
 
 In addition to a list of the payment transactions that have been handeled so far, the data.json file
 stores a list of all of the response transactions that this system has sent whether its sending 
-tokens back or sending a refund back. This is stored in the ``handeled_transactions_mapping`` key
+tokens back or sending a refund back. This is stored in the ``handled_transactions_mapping`` key
 value pair of the dictionary; where this specific dictionary (refering to 
-``handeled_transactions_mapping``) has the following format::
+``handled_transactions_mapping``) has the following format::
 
     {
         "tx_hash_of_tx_we_received": "tx_hash_of_tx_we_sent_back"
