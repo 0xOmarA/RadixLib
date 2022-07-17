@@ -122,7 +122,7 @@ class Wallet():
         # Submitting the transaction to the blockchain
         tx_submission_info: Dict[Any, Any] = self.provider.finalize_transaction(
             unsigned_transaction = tx_info['transaction_build']['unsigned_transaction'],
-            signature_der = self.signer.sign(tx_info['transaction_build']['payload_to_sign']),
+            signature_der = self.signer.sign(tx_info['transaction_build']['payload_to_sign'], self.index),
             public_key = self.public_key,
             submit = True,
         )
