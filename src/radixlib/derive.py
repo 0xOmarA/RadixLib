@@ -49,7 +49,11 @@ def public_key_from_ecdsa_private_key(private_key: ecdsa.SigningKey) -> str:
 
     Args:
         private_key (ecdsa.SigningKey): A instance of the ecdsa.SigningKey to get equivalent public key for.
+    
+    Returns:
+
     """
+    return private_key.get_verifying_key().to_string("compressed").hex()
 
 def public_key_from_wallet_address(wallet_address: str) -> str:
     """ Derives the public key of a wallet from the wallet address.

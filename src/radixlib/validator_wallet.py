@@ -38,39 +38,32 @@ class ValidatorWallet(Wallet):
 
         self.provider: Provider = provider
         self.network: Network = provider.network
-        self.private_key: ecdsa.SigningKey = ecdsa_private_key
+        self._ecdsa_private_key: ecdsa.SigningKey = ecdsa_private_key
         self.__parser: Type[ParserBase] = DefaultParser
 
     @property
     def public_key(self) -> str:
         """ A getter method for the public key """
-        return self.signer.public_key(self.index)
+        return radix.derive.public_key_from_ecdsa_private_key(self._ecdsa_private_key)
 
     @property
     def private_key(self) -> str:
         """ A getter method for the private key """
-        return self.signer.private_key(self.index)
+        return self._ecdsa_private_key.to_string()
 
     @property
-    def address(self) -> str:
-        """ A getter method for the wallet address """
-        return radix.derive.wallet_address_from_public_key(
-            public_key = self.public_key,
-            network = self.network
-        )
-
-    @property
-    def account_identifier(self) -> AccountIdentifier:
-        """ Created an account identifier object from the wallet address """
-        return AccountIdentifier(self.address)
-
-    @property
-    def action_builder(self) -> ActionBuilder:
-        """ Creates a new action builder for the current network and returns it """
-        return ActionBuilder(self.network)
-
+    def validator_address(self) -> str:
+        """
+        a getter method for the validator_address
+        """
+        return radix.derive.validator_address_from_public_key(self.public_key, self.network)
+    
     @classmethod
-    def from_validator_keystore(filename: str, password: str) -> ValidatorWallet:
+    def from_validator_keystore(
+        clz, 
+        provider: Provider, 
+        filename: str, 
+        password: str) -> 'ValidatorWallet':
         with open(filename, 'rb') as f:
             private_key, certificate, additional_certificated = pkcs12.load_key_and_certificates(f.read(),
             str.encode(password), default_backend())
@@ -80,8 +73,7 @@ class ValidatorWallet(Wallet):
 
         # Convert into Elliptic Curve Digital Signature Algorithm (ecdsa) private key object
         private_key = ecdsa.SigningKey.from_der(private_key_bytes, hashfunc=hashlib.sha256)
-
-
+        return clz(provider, private_key)
 
 
     # ########################################
@@ -120,7 +112,7 @@ class ValidatorWallet(Wallet):
             encoded_message_hex: str
             if encrypt_for_address:
                 encoded_message_hex = "01FF" + radix.utils.encrypt_message(
-                    sender_private_key = self.private_key,
+                    sender_private_key = self._ecdsa_private_key,
                     receiver_public_key = radix.derive.public_key_from_wallet_address(encrypt_for_address),
                     message = message_string
                 )
@@ -144,7 +136,11 @@ class ValidatorWallet(Wallet):
         # Submitting the transaction to the blockchain
         tx_submission_info: Dict[Any, Any] = self.provider.finalize_transaction(
             unsigned_transaction = tx_info['transaction_build']['unsigned_transaction'],
-            signature_der = self.signer.sign(tx_info['transaction_build']['payload_to_sign'], self.index),
+            # signature_der = self.signer.sign(tx_info['transaction_build']['payload_to_sign'], self.index),
+            signature_der = self._ecdsa_private_key.sign_digest( #type: ignore
+                digest = bytearray.fromhex(tx_info['transaction_build']['payload_to_sign']), 
+                sigencode=sigencode_der
+            ).hex(),
             public_key = self.public_key,
             submit = True,
         )
