@@ -3,6 +3,7 @@
 from cryptography.hazmat.primitives.serialization import pkcs12
 from cryptography.hazmat.primitives.serialization import Encoding, PrivateFormat, NoEncryption
 from cryptography.hazmat.backends import default_backend
+from binascii import hexlify
 from ecdsa.util import sigencode_der
 import ecdsa
 import hashlib
@@ -38,39 +39,40 @@ class ValidatorWallet(Wallet):
 
         self.provider: Provider = provider
         self.network: Network = provider.network
-        self.private_key: ecdsa.SigningKey = ecdsa_private_key
+        self._private_key: ecdsa.SigningKey = ecdsa_private_key
         self.__parser: Type[ParserBase] = DefaultParser
 
     @property
     def public_key(self) -> str:
         """ A getter method for the public key """
-        return self.signer.public_key(self.index)
+        return radix.derive.public_key_from_ecdsa_private_key(self._private_key)
 
     @property
     def private_key(self) -> str:
         """ A getter method for the private key """
-        return self.signer.private_key(self.index)
+        return hexlify(self._private_key.to_string()).decode()
 
-    @property
-    def address(self) -> str:
-        """ A getter method for the wallet address """
-        return radix.derive.wallet_address_from_public_key(
-            public_key = self.public_key,
-            network = self.network
-        )
+    # @property
+    # def address(self) -> str:
+    #     """ A getter method for the wallet address """
+    #     return radix.derive.wallet_address_from_public_key(
+    #         public_key = self.public_key,
+    #         network = self.network
+    #     )
 
-    @property
-    def account_identifier(self) -> AccountIdentifier:
-        """ Created an account identifier object from the wallet address """
-        return AccountIdentifier(self.address)
+    # @property
+    # def account_identifier(self) -> AccountIdentifier:
+    #     """ Created an account identifier object from the wallet address """
+    #     return AccountIdentifier(self.address)
 
-    @property
-    def action_builder(self) -> ActionBuilder:
-        """ Creates a new action builder for the current network and returns it """
-        return ActionBuilder(self.network)
+    # @property
+    # def action_builder(self) -> ActionBuilder:
+    #     """ Creates a new action builder for the current network and returns it """
+    #     return ActionBuilder(self.network)
 
     @classmethod
-    def from_validator_keystore(filename: str, password: str) -> ValidatorWallet:
+    def from_validator_keystore(clz, filename: str, password: str, network: Network) -> 'ValidatorWallet':
+        provider : radix.Provider = radix.Provider(network)
         with open(filename, 'rb') as f:
             private_key, certificate, additional_certificated = pkcs12.load_key_and_certificates(f.read(),
             str.encode(password), default_backend())
@@ -80,6 +82,8 @@ class ValidatorWallet(Wallet):
 
         # Convert into Elliptic Curve Digital Signature Algorithm (ecdsa) private key object
         private_key = ecdsa.SigningKey.from_der(private_key_bytes, hashfunc=hashlib.sha256)
+
+        return clz(provider, private_key)
 
 
 
