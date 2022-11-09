@@ -39,40 +39,32 @@ class ValidatorWallet(Wallet):
 
         self.provider: Provider = provider
         self.network: Network = provider.network
-        self._private_key: ecdsa.SigningKey = ecdsa_private_key
+        self._ecdsa_private_key: ecdsa.SigningKey = ecdsa_private_key
         self.__parser: Type[ParserBase] = DefaultParser
 
     @property
     def public_key(self) -> str:
         """ A getter method for the public key """
-        return radix.derive.public_key_from_ecdsa_private_key(self._private_key)
+        return radix.derive.public_key_from_ecdsa_private_key(self._ecdsa_private_key)
 
     @property
     def private_key(self) -> str:
         """ A getter method for the private key """
-        return hexlify(self._private_key.to_string()).decode()
+        return hexlify(self._ecdsa_private_key.to_string()).decode()
 
-    # @property
-    # def address(self) -> str:
-    #     """ A getter method for the wallet address """
-    #     return radix.derive.wallet_address_from_public_key(
-    #         public_key = self.public_key,
-    #         network = self.network
-    #     )
-
-    # @property
-    # def account_identifier(self) -> AccountIdentifier:
-    #     """ Created an account identifier object from the wallet address """
-    #     return AccountIdentifier(self.address)
-
-    # @property
-    # def action_builder(self) -> ActionBuilder:
-    #     """ Creates a new action builder for the current network and returns it """
-    #     return ActionBuilder(self.network)
-
+    @property
+    def validator_address(self) -> str:
+        """
+        a getter method for the validator_address
+        """
+        return radix.derive.validator_address_from_public_key(self.public_key, self.network)
+    
     @classmethod
-    def from_validator_keystore(clz, filename: str, password: str, network: Network) -> 'ValidatorWallet':
-        provider : radix.Provider = radix.Provider(network)
+    def from_validator_keystore(
+        clz, 
+        provider: Provider, 
+        filename: str, 
+        password: str) -> 'ValidatorWallet':
         with open(filename, 'rb') as f:
             private_key, certificate, additional_certificated = pkcs12.load_key_and_certificates(f.read(),
             str.encode(password), default_backend())
@@ -82,10 +74,12 @@ class ValidatorWallet(Wallet):
 
         # Convert into Elliptic Curve Digital Signature Algorithm (ecdsa) private key object
         private_key = ecdsa.SigningKey.from_der(private_key_bytes, hashfunc=hashlib.sha256)
-
         return clz(provider, private_key)
-
-
+    
+    @classmethod
+    def from_private_key(clz, provider: Provider, private_key_hex: str) -> 'ValidatorWallet':
+        private_key = ecdsa.SigningKey.from_string(bytearray.fromhex(private_key_hex), curve=ecdsa.SECP256k1)
+        return clz(provider, private_key)
 
 
     # ########################################
@@ -124,7 +118,7 @@ class ValidatorWallet(Wallet):
             encoded_message_hex: str
             if encrypt_for_address:
                 encoded_message_hex = "01FF" + radix.utils.encrypt_message(
-                    sender_private_key = self.private_key,
+                    sender_private_key = self._ecdsa_private_key,
                     receiver_public_key = radix.derive.public_key_from_wallet_address(encrypt_for_address),
                     message = message_string
                 )
@@ -148,278 +142,14 @@ class ValidatorWallet(Wallet):
         # Submitting the transaction to the blockchain
         tx_submission_info: Dict[Any, Any] = self.provider.finalize_transaction(
             unsigned_transaction = tx_info['transaction_build']['unsigned_transaction'],
-            signature_der = self.signer.sign(tx_info['transaction_build']['payload_to_sign'], self.index),
+            # signature_der = self.signer.sign(tx_info['transaction_build']['payload_to_sign'], self.index),
+            signature_der = self._ecdsa_private_key.sign_digest( #type: ignore
+                digest = bytearray.fromhex(tx_info['transaction_build']['payload_to_sign']), 
+                sigencode=sigencode_der
+            ).hex(),
             public_key = self.public_key,
             submit = True,
         )
 
         print(tx_submission_info)
         return tx_submission_info['transaction_identifier']['hash']
-
-    # ###########################################
-    # ---------- Query for Information ----------
-    # ###########################################
-
-    def get_account_balances(
-        self,
-        state_identifier: Optional[StateIdentifier] = None
-    ) -> Dict[str, Dict[str, int]]:
-        """ Gets the account balance of the address and parses it through the 
-        ``parse_account_balances`` parser.
-
-        Args:
-            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
-                to None. Allows a client to request a response referencing an earlier ledger state.
-
-        Returns:
-            dict: A dictionary in the format described by the ``parse_account_balances`` parser.
-        """
-        
-        return self.__parser.parse( # type: ignore
-            data = self.provider.get_account_balances(self.address, state_identifier),
-            data_type = 'get_account_balances'
-        )
-
-    def get_stake_positions(
-        self,
-        state_identifier: Optional[StateIdentifier] = None
-    ) -> Dict[str, List[Dict[str, Any]]]:
-        """ Gets the stake positions of the currnetly loaded wallet and parses it through the 
-        ``parse_stake_positions`` parser.
-        
-        Args:
-            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
-                to None. Allows a client to request a response referencing an earlier ledger state.
-
-        Returns:
-            dict: A dictionary in the format described by the ``parse_stake_positions`` parser.
-        """
-
-        return self.__parser.parse( # type: ignore
-            data = self.provider.get_stake_positions(self.address, state_identifier),
-            data_type = "get_stake_positions"
-        )
-
-    def get_unstake_positions(
-        self,
-        state_identifier: Optional[StateIdentifier] = None
-    ) -> Dict[str, List[Dict[str, Any]]]:
-        """ Gets the unstake positions of the currnetly loaded wallet and parses it through the 
-        ``parse_unstake_positions`` parser.
-        
-        Args:
-            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
-                to None. Allows a client to request a response referencing an earlier ledger state.
-
-        Returns:
-            dict: A dictionary in the format described by the ``parse_unstake_positions`` parser.
-        """
-
-        return self.__parser.parse( # type: ignore
-            data = self.provider.get_unstake_positions(self.address, state_identifier),
-            data_type = "get_unstake_positions"
-        )
-
-    def get_account_transactions(
-        self,
-        limit: int = 30,
-        cursor: Optional[str] = None,
-        state_identifier: Optional[StateIdentifier] = None
-    ) -> Tuple[Optional[str], List[Dict[str, Any]]]:
-        """ Gets the transaction history for the currenty loaded wallet and parses it through the
-        ``parse_account_transactions`` parser.
-
-        Args:
-            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
-                to None. Allows a client to request a response referencing an earlier ledger state.
-            cursor (:obj:`str`, optional): A timestamp of when to begin getting transactions.
-            limit (int): The page size requested. The maximum value is 30 at present        
-
-        Returns:
-            tuple: A tuple fo an optional string which is of the next cursor and a list of dicts 
-                which is of the parsed transactions
-        """
-
-        # The response of the API to the get transaction query
-        api_response: Dict[str, Any] = self.provider.get_account_transactions(
-            account_address = self.address,
-            state_identifier = state_identifier,
-            cursor = cursor,
-            limit = limit
-        )
-
-        # Return the next cursor if it's given and the parsed transactions list
-        return (
-            api_response.get('next_cursor'),
-            self.__parser.parse( # type: ignore
-                data = api_response,
-                data_type = "get_account_transactions"
-            )
-        )
-
-    def get_native_token_info(
-        self,
-        state_identifier: Optional[StateIdentifier] = None
-    ) -> Dict[str, Any]:
-        """ Gets the information of the native token of the network and parses it through the 
-        ``parse_token_info`` parser.
-
-        Args:
-            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
-                to None. Allows a client to request a response referencing an earlier ledger state.
-
-        Returns:
-            dict: A dictionary in the format described by the ``parse_token_info`` parser.
-        """
-
-        return self.__parser.parse( # type: ignore
-            data = self.provider.get_native_token_info(state_identifier),
-            data_type = "get_native_token_info"
-        )
-
-    def get_token_info(
-        self,
-        token_rri: str, 
-        state_identifier: Optional[StateIdentifier] = None
-    ) -> Dict[str, Any]:
-        """ Gets the information of the native token of the network and parses it through the 
-        ``parse_token_info`` parser.
-
-        Args:
-            token_rri (str): The RRI of the token to get the information for.
-            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
-                to None. Allows a client to request a response referencing an earlier ledger state.
-
-        Returns:
-            dict: A dictionary in the format described by the ``parse_token_info`` parser.
-        """
-
-        return self.__parser.parse( # type: ignore
-            data = self.provider.get_token_info(token_rri, state_identifier),
-            data_type = "get_token_info"
-        )
-
-    def derive_token_identifier(
-        self,
-        symbol: str
-    ) -> str:
-        """ Derives the RRI of a token created by this account.
-
-        Args:
-            symbol (str): The 3 to 8 character long symbol assigned to the token.
-
-        Returns:
-            str: A string of the derived token identifier.
-        """
-
-        return self.__parser.parse( # type: ignore
-            data = self.provider.derive_token_identifier(self.public_key, symbol),
-            data_type = "derive_token_identifier"
-        )
-
-    def get_validator(
-        self,
-        validator_address: str,
-        state_identifier: Optional[StateIdentifier] = None
-    ) -> Dict[str, Any]:
-        """ Gets the information for a given validator and parses it through the 
-        ``parse_validator_info`` parser
-        
-        Args:
-            validator_address (str): An identifier for the validator to get info on.
-            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
-                to None. Allows a client to request a response referencing an earlier ledger state.
-
-        Returns:
-            dict: A dictionary in the format described by the ``parse_validator_info`` parser.
-        """
-
-        return self.__parser.parse( # type: ignore
-            data = self.provider.get_validator(validator_address, state_identifier),
-            data_type = "get_validator"
-        )
-
-
-    def get_validators(
-        self,
-        state_identifier: Optional[StateIdentifier] = None
-    ) -> List[Dict[str, Any]]:
-        """ Gets the information of all of the validators on the network and parses it through the 
-        ``parse_validator_info`` parser.
-        
-        Args:
-            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
-                to None. Allows a client to request a response referencing an earlier ledger state.
-
-        Returns:
-            dict: A dictionary in the format described by the ``parse_validator_info`` parser.
-        """
-
-        return self.__parser.parse( # type: ignore
-            data = self.provider.get_validators(),
-            data_type = "get_validators"
-        )
-
-    def get_validator_stakes(
-        self,
-        state_identifier: Optional[StateIdentifier] = None,
-        cursor: Optional[str] = None,
-        limit: int = 30,
-    ) -> Tuple[Optional[str], List[Dict[str, Any]]]:
-        """ Returns paginated results about the delegated stakes from accounts to a validator. The 
-        results are totalled by account, and ordered by account age (oldest to newest).
-        
-        Args:
-            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
-                to None. Allows a client to request a response referencing an earlier ledger state.
-            cursor (:obj:`str`, optional): A timestamp of when to begin getting transactions.
-            limit (int): The page size requested. The maximum value is 30 at present.
-
-        Returns:
-            dict: A dictionary of the validator stakes
-        """
-
-        # The response of the API to the get transaction query
-        api_response: Dict[str, Any] = self.provider.get_validator_stakes(
-            validator_address = radix.derive.validator_address_from_public_key(
-                public_key = self.public_key,
-                network = self.network
-            ),
-            state_identifier = state_identifier,
-            cursor = cursor,
-            limit = limit
-        )
-
-        # Return the next cursor if it's given and the parsed validator stakes list
-        return (
-            api_response.get('next_cursor'),
-            self.__parser.parse( # type: ignore
-                data = api_response,
-                data_type = "get_validator_stakes"
-            )
-        )
-
-    def transaction_status(
-        self,
-        transaction_hash: str,
-        state_identifier: Optional[StateIdentifier] = None,
-    ) -> Dict[str, Any]:
-        """Returns the status and contents of the transaction with the given transaction identifier.
-        Transaction identifiers which aren't recognised as either belonging to a committed
-        transaction or a transaction submitted through this Network Gateway may return a 
-        TransactionNotFoundError. Transaction identifiers relating to failed transactions will, 
-        after a delay, also be reported as a TransactionNotFoundError.
-        
-        Args:
-            transaction_hash (str): An identifier for the transaction
-            state_identifier (:obj:`StateIdentifier`, optional): An optional argument that defaults 
-                to None. Allows a client to request a response referencing an earlier ledger state.
-
-        Returns:
-            dict: A dictionary in the format described by the ``parse_validator_info`` parser.
-        """
-
-        return self.__parser.parse( # type: ignore
-            data = self.provider.transaction_status(transaction_hash, state_identifier),
-            data_type = "transaction_status"
-        )
