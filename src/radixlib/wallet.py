@@ -32,7 +32,7 @@ class Wallet():
         self.network: Network = provider.network
         self.signer: Signer = signer
         self.index: int = index
-        self.__parser: Type[ParserBase] = DefaultParser
+        self.parser: Type[ParserBase] = DefaultParser
 
     @property
     def public_key(self) -> str:
@@ -149,7 +149,7 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_account_balances`` parser.
         """
         
-        return self.__parser.parse( # type: ignore
+        return self.parser.parse( # type: ignore
             data = self.provider.get_account_balances(self.address, state_identifier),
             data_type = 'get_account_balances'
         )
@@ -169,7 +169,7 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_stake_positions`` parser.
         """
 
-        return self.__parser.parse( # type: ignore
+        return self.parser.parse( # type: ignore
             data = self.provider.get_stake_positions(self.address, state_identifier),
             data_type = "get_stake_positions"
         )
@@ -189,7 +189,7 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_unstake_positions`` parser.
         """
 
-        return self.__parser.parse( # type: ignore
+        return self.parser.parse( # type: ignore
             data = self.provider.get_unstake_positions(self.address, state_identifier),
             data_type = "get_unstake_positions"
         )
@@ -225,7 +225,7 @@ class Wallet():
         # Return the next cursor if it's given and the parsed transactions list
         return (
             api_response.get('next_cursor'),
-            self.__parser.parse( # type: ignore
+            self.parser.parse( # type: ignore
                 data = api_response,
                 data_type = "get_account_transactions"
             )
@@ -246,7 +246,7 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_token_info`` parser.
         """
 
-        return self.__parser.parse( # type: ignore
+        return self.parser.parse( # type: ignore
             data = self.provider.get_native_token_info(state_identifier),
             data_type = "get_native_token_info"
         )
@@ -268,7 +268,7 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_token_info`` parser.
         """
 
-        return self.__parser.parse( # type: ignore
+        return self.parser.parse( # type: ignore
             data = self.provider.get_token_info(token_rri, state_identifier),
             data_type = "get_token_info"
         )
@@ -286,7 +286,7 @@ class Wallet():
             str: A string of the derived token identifier.
         """
 
-        return self.__parser.parse( # type: ignore
+        return self.parser.parse( # type: ignore
             data = self.provider.derive_token_identifier(self.public_key, symbol),
             data_type = "derive_token_identifier"
         )
@@ -308,7 +308,7 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_validator_info`` parser.
         """
 
-        return self.__parser.parse( # type: ignore
+        return self.parser.parse( # type: ignore
             data = self.provider.get_validator(validator_address, state_identifier),
             data_type = "get_validator"
         )
@@ -329,7 +329,7 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_validator_info`` parser.
         """
 
-        return self.__parser.parse( # type: ignore
+        return self.parser.parse( # type: ignore
             data = self.provider.get_validators(),
             data_type = "get_validators"
         )
@@ -367,7 +367,7 @@ class Wallet():
         # Return the next cursor if it's given and the parsed validator stakes list
         return (
             api_response.get('next_cursor'),
-            self.__parser.parse( # type: ignore
+            self.parser.parse( # type: ignore
                 data = api_response,
                 data_type = "get_validator_stakes"
             )
@@ -393,7 +393,7 @@ class Wallet():
             dict: A dictionary in the format described by the ``parse_validator_info`` parser.
         """
 
-        return self.__parser.parse( # type: ignore
+        return self.parser.parse( # type: ignore
             data = self.provider.transaction_status(transaction_hash, state_identifier),
             data_type = "transaction_status"
         )

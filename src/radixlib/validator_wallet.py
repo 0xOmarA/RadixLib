@@ -40,7 +40,7 @@ class ValidatorWallet(Wallet):
         self.provider: Provider = provider
         self.network: Network = provider.network
         self._ecdsa_private_key: ecdsa.SigningKey = ecdsa_private_key
-        self.__parser: Type[ParserBase] = DefaultParser
+        self.parser: Type[ParserBase] = DefaultParser
 
     @property
     def public_key(self) -> str:
@@ -152,4 +152,18 @@ class ValidatorWallet(Wallet):
         )
 
         print(tx_submission_info)
+        return tx_submission_info['transaction_identifier']['hash']
+    
+    def finalize_transaction(self, unsigned_tx:str, payload_to_sign:str, submit=True) -> str:
+        '''
+        Submitting the transaction to the blockchain
+        '''
+        tx_submission_info: Dict[Any, Any] = self.provider.finalize_transaction(
+            unsigned_transaction=unsigned_tx,
+            signature_der=self._ecdsa_private_key.sign_digest(
+                digest=bytearray.fromhex(payload_to_sign), sigencode=sigencode_der
+            ).hex(),
+            public_key=self.public_key,
+            submit=submit
+        )
         return tx_submission_info['transaction_identifier']['hash']
