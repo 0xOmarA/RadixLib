@@ -263,7 +263,8 @@ class Provider():
             endpoint = "account/transactions",
             params = {
                 "account_identifier": AccountIdentifier(account_address),
-                "at_state_identifier": state_identifier,
+                "at_state_identifier": at_state_identifier,
+                "from_state_identifier": from_state_identifier,
                 "cursor": cursor,
                 "limit": limit
             },
