@@ -239,7 +239,8 @@ class Provider():
     def get_account_transactions(
         self,
         account_address: str,
-        state_identifier: Optional[StateIdentifier] = None,
+        at_state_identifier: Optional[StateIdentifier] = None,
+        from_state_identifier: Optional[StateIdentifier] = None,
         cursor: Optional[str] = None,
         limit: int = 30,
     ) -> Dict[str, Any]:
@@ -262,7 +263,8 @@ class Provider():
             endpoint = "account/transactions",
             params = {
                 "account_identifier": AccountIdentifier(account_address),
-                "at_state_identifier": state_identifier,
+                "at_state_identifier": at_state_identifier,
+                "from_state_identifier": from_state_identifier,
                 "cursor": cursor,
                 "limit": limit
             },
