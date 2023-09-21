@@ -1,3 +1,6 @@
+| **Note** | This library has reached its end-of-life and will become an open archive with the transition from Olympia to Babylon. This library has been replaced by the [Python Radix Engine Toolkit](https://pypi.org/project/radix-engine-toolkit/0.12.1.dev3/). For issues and PRs, please open them against the [Radix Engine Toolkit](https://github.com/radixdlt/radix-engine-toolkit/) repo. |
+| -------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+
 # RadixLib
 
 ![](./images/frame1.svg)
