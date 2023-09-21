@@ -155,7 +155,7 @@ class ActionBuilder():
         the specified validator.
 
         Args:
-            from_validator_address (str): The validators that tokens will be unstaked from.
+            from_validator_address (str): The validator that tokens will be unstaked from.
             to_account_address (str): The address that the tokens will be sent to once unstaked.
             percentage_amount (Union[int, float]): The percentage amount to unstake from the given
                 validator. Keep in mind that this is the percentage amount meaning that it should 
@@ -186,7 +186,7 @@ class ActionBuilder():
         the specified validator.
 
         Args:
-            from_validator_address (str): The validators that tokens will be unstaked from.
+            from_validator_address (str): The validator that tokens will be unstaked from.
             to_account_address (str): The address that the tokens will be sent to once unstaked.
             unstake_amount (int): The amount of XRD to unstake from the validator. Keep in mind that you 
                 must specify this amount in Atto and not in XRD.
@@ -217,8 +217,8 @@ class ActionBuilder():
         the specified validator.
 
         Args:
-            to_validator_address (str): The validators that tokens will be unstaked from.
-            from_account_address (str): The address that the tokens will be sent to once unstaked.
+            to_validator_address (str): The validator that tokens will be staked to.
+            from_account_address (str): The address that the tokens will be sent from.
             stake_amount (int): The amount of XRD to unstake from the validator. Keep in mind that 
                 you must specify this amount in Atto and not in XRD.
 
